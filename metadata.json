@@ -1,0 +1,6 @@
+{
+  "name": "Bercali Store — Painel Administrativo",
+  "description": "Centro de controlo administrativo independente da Bercali Store para gestão de produtos, categorias, encomendas, clientes, CRM, marketing, Meta Pixel, relatórios e permissões.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,25 @@
+# Dependências
+node_modules/
+
+# Build e cache de PWA / Vite
+dist/
+dist-ssr/
+dev-dist/
+build/
+coverage/
+server.js
+
+# Variáveis de ambiente locais (mantém apenas .env.example no Git)
+.env
+.env*
+!.env.example
+
+# Vercel & ferramentas locais
+.vercel/
+.playwright-cli/
+
+# Sistema operativo e logs
+.DS_Store
+Thumbs.db
+*.log
+*.local
