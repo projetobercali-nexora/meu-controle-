@@ -98,7 +98,7 @@ export const UsersPermissionsPage: React.FC = () => {
           <button
             type="button"
             onClick={() => setInviteGuideOpen(true)}
-            className="btn-bercali-primary px-4 py-2.5 rounded-[10px] text-xs inline-flex items-center gap-2 whitespace-nowrap shrink-0"
+            className="btn-bercali-primary w-full sm:w-auto min-h-[44px] sm:min-h-0 justify-center px-4 py-2.5 rounded-[10px] text-xs inline-flex items-center gap-2 whitespace-nowrap shrink-0"
           >
             <UserPlus className="w-4 h-4" />
             <span>Adicionar Membro da Equipa</span>
@@ -155,8 +155,8 @@ export const UsersPermissionsPage: React.FC = () => {
         <LoadingBlock label="A carregar contas administrativas..." />
       ) : (
         <div className="bg-white border border-[#E5E5E5] rounded-xl overflow-hidden">
-          <div className="p-5 border-b border-[#E5E5E5] flex items-center justify-between">
-            <div>
+          <div className="p-4 sm:p-5 border-b border-[#E5E5E5] flex items-center justify-between gap-3">
+            <div className="min-w-0">
               <h2 className="font-brand font-bold text-base text-[#0A0A0A]">
                 Contas Administrativas Registadas ({snapshot.profiles.length})
               </h2>
@@ -164,10 +164,62 @@ export const UsersPermissionsPage: React.FC = () => {
                 Sincronizadas com <span className="font-mono">auth.users</span> · Apenas o Superadministrador pode alterar funções ou ativar acessos
               </p>
             </div>
-            <ShieldCheck className="w-5 h-5 text-[#FF8A00]" />
+            <ShieldCheck className="w-5 h-5 text-[#FF8A00] shrink-0" />
           </div>
 
-          <div className="overflow-x-auto">
+          {/* Mobile Stacked Cards */}
+          <div className="md:hidden divide-y divide-[#E5E5E5] text-xs">
+            {snapshot.profiles.map((p) => (
+              <div key={p.id} className="p-4 space-y-2.5">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <p className="font-semibold text-[#0A0A0A] break-words">{p.fullName}</p>
+                    <p className="font-mono text-[11px] text-[#525252] break-all mt-0.5">
+                      {p.email}
+                    </p>
+                    {p.phone && (
+                      <p className="text-[11px] font-mono text-[#737373] mt-0.5">{p.phone}</p>
+                    )}
+                  </div>
+                  {p.isActive ? (
+                    <span className="inline-flex items-center gap-1 text-[#15803D] font-medium shrink-0">
+                      <CheckCircle2 className="w-3.5 h-3.5" />
+                      <span>Ativo</span>
+                    </span>
+                  ) : (
+                    <span className="text-[#B91C1C] font-medium shrink-0">Pendente / Suspenso</span>
+                  )}
+                </div>
+
+                <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] text-[#525252]">
+                  <span className="font-medium text-[#0A0A0A]">{getRoleLabel(p.role)}</span>
+                  <span className="tabular-data">
+                    Atividade: {formatDateTimePt(p.lastActiveAt)}
+                  </span>
+                </div>
+
+                {canManageUsers ? (
+                  <div className="pt-1">
+                    <button
+                      type="button"
+                      disabled={isMutating}
+                      onClick={() => openEdit(p)}
+                      aria-label={`Editar perfil de ${p.fullName}`}
+                      className="min-h-[44px] w-full px-3 py-2 rounded-lg border border-[#E5E5E5] hover:bg-[#F4F4F4] inline-flex items-center justify-center gap-1.5 font-semibold text-[#0A0A0A] disabled:opacity-40"
+                    >
+                      <Edit3 className="w-3.5 h-3.5 text-[#FF8A00]" />
+                      <span>Editar perfil</span>
+                    </button>
+                  </div>
+                ) : (
+                  <p className="text-[11px] text-[#737373]">Gestão reservada ao Superadmin</p>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop Table */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="border-b border-[#E5E5E5] bg-[#FAFAFA] text-[11px] font-semibold text-[#525252]">
@@ -225,7 +277,7 @@ export const UsersPermissionsPage: React.FC = () => {
       )}
 
       {/* Activity Logs */}
-      <div className="bg-white border border-[#E5E5E5] rounded-xl p-5 space-y-4">
+      <div className="bg-white border border-[#E5E5E5] rounded-xl p-4 sm:p-5 space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <h2 className="font-brand font-bold text-base text-[#0A0A0A]">
@@ -239,7 +291,7 @@ export const UsersPermissionsPage: React.FC = () => {
             aria-label="Filtrar registo de auditoria por módulo"
             value={logEntityFilter}
             onChange={(e) => setLogEntityFilter(e.target.value)}
-            className="px-3 py-2 text-xs border border-[#D4D4D4] rounded-[10px] bg-white"
+            className="w-full sm:w-auto min-h-[44px] sm:min-h-0 px-3 py-2 text-xs border border-[#D4D4D4] rounded-[10px] bg-white"
           >
             <option value="all">Todas as áreas</option>
             <option value="product">Produtos</option>
@@ -260,11 +312,11 @@ export const UsersPermissionsPage: React.FC = () => {
           <div className="divide-y divide-[#E5E5E5] text-xs max-h-80 overflow-y-auto">
             {filteredLogs.map((log) => (
               <div key={log.id} className="py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                <div>
-                  <p className="font-semibold text-[#0A0A0A]">
+                <div className="min-w-0">
+                  <p className="font-semibold text-[#0A0A0A] break-words">
                     {log.action} · <span className="font-mono text-[#525252]">{log.entityRef}</span>
                   </p>
-                  <p className="text-[#525252] mt-0.5">{log.details}</p>
+                  <p className="text-[#525252] mt-0.5 break-words">{log.details}</p>
                 </div>
                 <div className="sm:text-right text-[11px] text-[#737373] shrink-0 tabular-data">
                   <p>{formatDateTimePt(log.createdAt)}</p>
@@ -281,14 +333,14 @@ export const UsersPermissionsPage: React.FC = () => {
       {/* Edit Admin User Modal */}
       {modalOpen && editingProfile && (
         <div
-          className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4"
+          className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-3 sm:p-4 pt-safe pb-safe"
           role="dialog"
           aria-modal="true"
           aria-labelledby="usr-modal-title"
         >
-          <div className="bg-white rounded-xl border border-[#E5E5E5] max-w-md w-full p-6">
-            <div className="flex items-center justify-between pb-3 mb-4 border-b border-[#E5E5E5]">
-              <h2 id="usr-modal-title" className="font-brand font-bold text-lg text-[#0A0A0A]">
+          <div className="bg-white rounded-xl border border-[#E5E5E5] max-w-md w-full max-h-[90dvh] flex flex-col overflow-hidden">
+            <div className="shrink-0 flex items-center justify-between gap-3 px-4 py-3.5 sm:px-6 sm:py-4 border-b border-[#E5E5E5]">
+              <h2 id="usr-modal-title" className="font-brand font-bold text-base sm:text-lg text-[#0A0A0A]">
                 Editar Perfil Administrativo
               </h2>
               <button
@@ -296,98 +348,104 @@ export const UsersPermissionsPage: React.FC = () => {
                 disabled={isSubmitting}
                 onClick={() => setModalOpen(false)}
                 aria-label="Fechar janela"
-                className="p-1.5 rounded-lg hover:bg-[#F4F4F4]"
+                className="min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 p-2 sm:p-1.5 inline-flex items-center justify-center rounded-lg hover:bg-[#F4F4F4] shrink-0"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            <form onSubmit={(e) => void handleSave(e)} noValidate className="space-y-3.5 text-xs">
-              <div>
-                <label className="block font-medium text-[#525252] mb-1">
-                  Email autenticado (Supabase Auth)
-                </label>
-                <input
-                  type="email"
-                  disabled
-                  value={editingProfile.email}
-                  className="w-full px-3 py-2 font-mono bg-[#F4F4F4] border border-[#E5E5E5] rounded-[10px] text-[#525252]"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="usr-name" className="block font-medium text-[#0A0A0A] mb-1">
-                  Nome completo *
-                </label>
-                <input
-                  id="usr-name"
-                  type="text"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  className="w-full px-3 py-2 border border-[#D4D4D4] rounded-[10px]"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="usr-phone" className="block font-medium text-[#0A0A0A] mb-1">
-                  Telefone institucional (opcional)
-                </label>
-                <input
-                  id="usr-phone"
-                  type="tel"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="+244 9XX XXX XXX"
-                  className="w-full px-3 py-2 font-mono border border-[#D4D4D4] rounded-[10px]"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="usr-role" className="block font-medium text-[#0A0A0A] mb-1">
-                  Função administrativa (RBAC)
-                </label>
-                <select
-                  id="usr-role"
-                  value={role}
-                  onChange={(e) => setRole(e.target.value as UserRole)}
-                  className="w-full px-3 py-2 border border-[#D4D4D4] rounded-[10px] bg-white"
-                >
-                  {(Object.keys(ROLE_DEFINITIONS) as UserRole[]).map((r) => (
-                    <option key={r} value={r}>
-                      {ROLE_DEFINITIONS[r].label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <label className="inline-flex items-center gap-2 font-medium text-[#0A0A0A]">
-                <input
-                  type="checkbox"
-                  checked={isActive}
-                  onChange={(e) => setIsActive(e.target.checked)}
-                />
-                <span>Conta ativa (autorizada a entrar no painel)</span>
-              </label>
-
-              {formError && (
-                <div role="alert" className="p-3 rounded-lg bg-[#FEF2F2] border border-[#FECACA] text-[#B91C1C]">
-                  {formError}
+            <form
+              onSubmit={(e) => void handleSave(e)}
+              noValidate
+              className="flex flex-col flex-1 min-h-0 overflow-hidden"
+            >
+              <div className="flex-1 min-h-0 overflow-y-auto p-4 sm:p-6 space-y-3.5 text-xs">
+                <div>
+                  <label className="block font-medium text-[#525252] mb-1">
+                    Email autenticado (Supabase Auth)
+                  </label>
+                  <input
+                    type="email"
+                    disabled
+                    value={editingProfile.email}
+                    className="w-full min-h-[44px] px-3 py-2 font-mono bg-[#F4F4F4] border border-[#E5E5E5] rounded-[10px] text-[#525252]"
+                  />
                 </div>
-              )}
 
-              <div className="flex justify-end gap-3 pt-2">
+                <div>
+                  <label htmlFor="usr-name" className="block font-medium text-[#0A0A0A] mb-1">
+                    Nome completo *
+                  </label>
+                  <input
+                    id="usr-name"
+                    type="text"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    className="w-full min-h-[44px] px-3 py-2 border border-[#D4D4D4] rounded-[10px]"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="usr-phone" className="block font-medium text-[#0A0A0A] mb-1">
+                    Telefone institucional (opcional)
+                  </label>
+                  <input
+                    id="usr-phone"
+                    type="tel"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="+244 9XX XXX XXX"
+                    className="w-full min-h-[44px] px-3 py-2 font-mono border border-[#D4D4D4] rounded-[10px]"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="usr-role" className="block font-medium text-[#0A0A0A] mb-1">
+                    Função administrativa (RBAC)
+                  </label>
+                  <select
+                    id="usr-role"
+                    value={role}
+                    onChange={(e) => setRole(e.target.value as UserRole)}
+                    className="w-full min-h-[44px] px-3 py-2 border border-[#D4D4D4] rounded-[10px] bg-white"
+                  >
+                    {(Object.keys(ROLE_DEFINITIONS) as UserRole[]).map((r) => (
+                      <option key={r} value={r}>
+                        {ROLE_DEFINITIONS[r].label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <label className="min-h-[44px] sm:min-h-0 inline-flex items-center gap-2 font-medium text-[#0A0A0A] cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={isActive}
+                    onChange={(e) => setIsActive(e.target.checked)}
+                  />
+                  <span>Conta ativa (autorizada a entrar no painel)</span>
+                </label>
+
+                {formError && (
+                  <div role="alert" className="p-3 rounded-lg bg-[#FEF2F2] border border-[#FECACA] text-[#B91C1C]">
+                    {formError}
+                  </div>
+                )}
+              </div>
+
+              <div className="shrink-0 flex items-center justify-end gap-3 px-4 py-3 sm:px-6 sm:py-4 border-t border-[#E5E5E5] bg-white text-xs">
                 <button
                   type="button"
                   disabled={isSubmitting}
                   onClick={() => setModalOpen(false)}
-                  className="px-4 py-2 border border-[#D4D4D4] rounded-[10px] disabled:opacity-50"
+                  className="min-h-[44px] sm:min-h-0 flex-1 sm:flex-initial px-4 py-2.5 sm:py-2 border border-[#D4D4D4] rounded-[10px] font-medium disabled:opacity-50"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="btn-bercali-primary px-4 py-2 rounded-[10px] disabled:opacity-50"
+                  className="btn-bercali-primary min-h-[44px] sm:min-h-0 flex-1 sm:flex-initial px-4 py-2.5 sm:py-2 rounded-[10px] disabled:opacity-50"
                 >
                   {isSubmitting ? 'A guardar...' : 'Guardar Perfil'}
                 </button>
@@ -400,50 +458,52 @@ export const UsersPermissionsPage: React.FC = () => {
       {/* Safe Invite User Guide Modal (Zero service_role in frontend) */}
       {inviteGuideOpen && (
         <div
-          className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4"
+          className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-3 sm:p-4 pt-safe pb-safe"
           role="dialog"
           aria-modal="true"
           aria-labelledby="invite-guide-title"
         >
-          <div className="bg-white rounded-xl border border-[#E5E5E5] max-w-lg w-full p-6 space-y-4 text-xs">
-            <div className="flex items-center justify-between pb-3 border-b border-[#E5E5E5]">
-              <h2 id="invite-guide-title" className="font-brand font-bold text-lg text-[#0A0A0A]">
+          <div className="bg-white rounded-xl border border-[#E5E5E5] max-w-lg w-full max-h-[90dvh] flex flex-col overflow-hidden text-xs">
+            <div className="shrink-0 flex items-center justify-between gap-3 px-4 py-3.5 sm:px-6 sm:py-4 border-b border-[#E5E5E5]">
+              <h2 id="invite-guide-title" className="font-brand font-bold text-base sm:text-lg text-[#0A0A0A]">
                 Adicionar Novo Membro sem Expor Chave Privada
               </h2>
               <button
                 type="button"
                 onClick={() => setInviteGuideOpen(false)}
                 aria-label="Fechar janela"
-                className="p-1.5 rounded-lg hover:bg-[#F4F4F4]"
+                className="min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 p-2 sm:p-1.5 inline-flex items-center justify-center rounded-lg hover:bg-[#F4F4F4] shrink-0"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            <div className="p-3.5 rounded-[10px] bg-[#F4F4F4] flex items-start gap-2.5 text-[#525252]">
-              <Info className="w-4 h-4 text-[#FF8A00] shrink-0 mt-0.5" />
-              <p className="leading-relaxed">
-                Por segurança, este painel não inclui a chave privilegiada <span className="font-mono">service_role</span> no navegador. A criação de credenciais é feita diretamente no Supabase Auth e ativada aqui.
-              </p>
+            <div className="flex-1 min-h-0 overflow-y-auto p-4 sm:p-6 space-y-4">
+              <div className="p-3.5 rounded-[10px] bg-[#F4F4F4] flex items-start gap-2.5 text-[#525252]">
+                <Info className="w-4 h-4 text-[#FF8A00] shrink-0 mt-0.5" />
+                <p className="leading-relaxed">
+                  Por segurança, este painel não inclui a chave privilegiada <span className="font-mono">service_role</span> no navegador. A criação de credenciais é feita diretamente no Supabase Auth e ativada aqui.
+                </p>
+              </div>
+
+              <ol className="space-y-2.5 text-[#525252] list-decimal list-inside leading-relaxed">
+                <li>
+                  No painel do projeto <strong>Supabase</strong>, acede a <strong>Authentication → Users</strong> e clica em <strong>Invite user</strong> ou <strong>Add user</strong>.
+                </li>
+                <li>
+                  O trigger automático PostgreSQL (<span className="font-mono">handle_new_auth_user</span>) criará imediatamente o registo correspondente na tabela <span className="font-mono">profiles</span> com <span className="font-mono">is_active = false</span> (bloqueado por defeito).
+                </li>
+                <li>
+                  Atualiza esta página, clica em <strong>Editar</strong> junto ao novo colaborador, escolhe a função adequada (ex.: <em>Gestor de Encomendas</em> ou <em>Atendimento / CRM</em>) e marca <strong>Conta ativa</strong>.
+                </li>
+              </ol>
             </div>
 
-            <ol className="space-y-2.5 text-[#525252] list-decimal list-inside leading-relaxed">
-              <li>
-                No painel do projeto <strong>Supabase</strong>, acede a <strong>Authentication → Users</strong> e clica em <strong>Invite user</strong> ou <strong>Add user</strong>.
-              </li>
-              <li>
-                O trigger automático PostgreSQL (<span className="font-mono">handle_new_auth_user</span>) criará imediatamente o registo correspondente na tabela <span className="font-mono">profiles</span> com <span className="font-mono">is_active = false</span> (bloqueado por defeito).
-              </li>
-              <li>
-                Atualiza esta página, clica em <strong>Editar</strong> junto ao novo colaborador, escolhe a função adequada (ex.: <em>Gestor de Encomendas</em> ou <em>Atendimento / CRM</em>) e marca <strong>Conta ativa</strong>.
-              </li>
-            </ol>
-
-            <div className="flex justify-end pt-2">
+            <div className="shrink-0 flex justify-end px-4 py-3 sm:px-6 sm:py-4 border-t border-[#E5E5E5] bg-white">
               <button
                 type="button"
                 onClick={() => setInviteGuideOpen(false)}
-                className="btn-bercali-primary px-4 py-2 rounded-[10px]"
+                className="btn-bercali-primary w-full sm:w-auto min-h-[44px] sm:min-h-0 px-4 py-2.5 sm:py-2 rounded-[10px]"
               >
                 Compreendido
               </button>

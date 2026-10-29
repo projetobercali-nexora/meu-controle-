@@ -274,12 +274,12 @@ export const CrmPage: React.FC = () => {
         <div
           role="group"
           aria-label="Modo de visualização do CRM"
-          className="inline-flex flex-wrap items-center gap-1 p-1 bg-white border border-[#E5E5E5] rounded-[10px] self-start"
+          className="w-full sm:w-auto flex flex-wrap items-center gap-1 p-1 bg-white border border-[#E5E5E5] rounded-[10px] self-start"
         >
           <button
             type="button"
             onClick={() => setViewMode('list')}
-            className={`px-3 py-1.5 text-xs font-medium rounded-lg inline-flex items-center gap-1.5 whitespace-nowrap ${
+            className={`min-h-[44px] sm:min-h-0 px-3 py-2 sm:py-1.5 text-xs font-medium rounded-lg inline-flex items-center gap-1.5 whitespace-nowrap ${
               viewMode === 'list' ? 'bg-[#0A0A0A] text-white' : 'text-[#525252]'
             }`}
           >
@@ -289,7 +289,7 @@ export const CrmPage: React.FC = () => {
           <button
             type="button"
             onClick={() => setViewMode('tasks')}
-            className={`px-3 py-1.5 text-xs font-medium rounded-lg inline-flex items-center gap-1.5 whitespace-nowrap ${
+            className={`min-h-[44px] sm:min-h-0 px-3 py-2 sm:py-1.5 text-xs font-medium rounded-lg inline-flex items-center gap-1.5 whitespace-nowrap ${
               viewMode === 'tasks' ? 'bg-[#0A0A0A] text-white' : 'text-[#525252]'
             }`}
           >
@@ -301,7 +301,7 @@ export const CrmPage: React.FC = () => {
           <button
             type="button"
             onClick={() => setViewMode('board')}
-            className={`px-3 py-1.5 text-xs font-medium rounded-lg inline-flex items-center gap-1.5 whitespace-nowrap ${
+            className={`min-h-[44px] sm:min-h-0 px-3 py-2 sm:py-1.5 text-xs font-medium rounded-lg inline-flex items-center gap-1.5 whitespace-nowrap ${
               viewMode === 'board' ? 'bg-[#0A0A0A] text-white' : 'text-[#525252]'
             }`}
           >
@@ -324,7 +324,7 @@ export const CrmPage: React.FC = () => {
            CRM TASKS & FOLLOW-UP VIEW (Pending, Overdue, Completed)
            ===================================================================== */
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start text-xs">
-          <div className="lg:col-span-7 bg-white border border-[#E5E5E5] rounded-xl p-5 space-y-4">
+          <div className="lg:col-span-7 bg-white border border-[#E5E5E5] rounded-xl p-4 sm:p-5 space-y-4">
             <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-[#E5E5E5]">
               <h2 className="font-brand font-bold text-base text-[#0A0A0A]">
                 Fila de Tarefas Comerciais (<span className="font-mono text-sm">crm_tasks</span>)
@@ -342,7 +342,7 @@ export const CrmPage: React.FC = () => {
                     key={tb.id}
                     type="button"
                     onClick={() => setTaskFilter(tb.id)}
-                    className={`px-2.5 py-1 rounded-md font-medium whitespace-nowrap ${
+                    className={`min-h-[40px] sm:min-h-0 px-2.5 py-1.5 sm:py-1 rounded-md font-medium whitespace-nowrap ${
                       taskFilter === tb.id
                         ? 'bg-white text-[#0A0A0A] shadow-xs'
                         : 'text-[#525252]'
@@ -363,7 +363,10 @@ export const CrmPage: React.FC = () => {
                 {filteredTasks.map((t) => {
                   const urgency = classifyCrmTaskUrgency(t);
                   return (
-                    <div key={t.id} className="py-3.5 flex items-start justify-between gap-4">
+                    <div
+                      key={t.id}
+                      className="py-3.5 flex flex-col sm:flex-row sm:items-start justify-between gap-3"
+                    >
                       <div className="space-y-1 min-w-0">
                         <div className="flex flex-wrap items-center gap-2">
                           {urgency === 'overdue' ? (
@@ -383,15 +386,15 @@ export const CrmPage: React.FC = () => {
                             </span>
                           )}
                           <span className="text-[#D4D4D4]">·</span>
-                          <span className="font-semibold text-[#0A0A0A]">{t.title}</span>
+                          <span className="font-semibold text-[#0A0A0A] break-words">{t.title}</span>
                         </div>
-                        <p className="text-[#525252]">
+                        <p className="text-[#525252] break-words">
                           Cliente: <strong className="text-[#0A0A0A]">{t.customerName}</strong>
                           {canViewPii && t.customerPhone ? ` (${t.customerPhone})` : ''}
                           {t.orderCode ? ` · Encomenda ${t.orderCode}` : ''}
                         </p>
                         {t.description && (
-                          <p className="text-[#525252] leading-relaxed">{t.description}</p>
+                          <p className="text-[#525252] leading-relaxed break-words">{t.description}</p>
                         )}
                         <p className="text-[11px] text-[#737373] tabular-data">
                           Prazo: {t.dueAt ? formatDateTimePt(t.dueAt) : 'Sem prazo limite'}
@@ -400,7 +403,7 @@ export const CrmPage: React.FC = () => {
                       </div>
 
                       {canWrite && (
-                        <div className="shrink-0">
+                        <div className="shrink-0 self-start">
                           {t.status !== 'completed' ? (
                             <button
                               type="button"
@@ -413,7 +416,7 @@ export const CrmPage: React.FC = () => {
                                   )
                                 )
                               }
-                              className="px-3 py-1.5 rounded-lg bg-[#0A0A0A] text-white font-semibold hover:opacity-90 whitespace-nowrap disabled:opacity-40"
+                              className="min-h-[44px] sm:min-h-0 px-3.5 py-2 sm:px-3 sm:py-1.5 rounded-lg bg-[#0A0A0A] text-white font-semibold hover:opacity-90 whitespace-nowrap disabled:opacity-40"
                             >
                               Concluir
                             </button>
@@ -429,7 +432,7 @@ export const CrmPage: React.FC = () => {
                                   )
                                 )
                               }
-                              className="px-3 py-1.5 rounded-lg border border-[#D4D4D4] text-[#0A0A0A] hover:bg-[#F4F4F4] whitespace-nowrap disabled:opacity-40"
+                              className="min-h-[44px] sm:min-h-0 px-3.5 py-2 sm:px-3 sm:py-1.5 rounded-lg border border-[#D4D4D4] text-[#0A0A0A] hover:bg-[#F4F4F4] whitespace-nowrap disabled:opacity-40"
                             >
                               Reabrir
                             </button>
@@ -444,7 +447,7 @@ export const CrmPage: React.FC = () => {
           </div>
 
           {/* Schedule New Follow-up Task */}
-          <div className="lg:col-span-5 bg-white border border-[#E5E5E5] rounded-xl p-5">
+          <div className="lg:col-span-5 bg-white border border-[#E5E5E5] rounded-xl p-4 sm:p-5">
             <h2 className="font-brand font-bold text-base text-[#0A0A0A] mb-1">
               Agendar Nova Tarefa de Follow-up
             </h2>
@@ -468,7 +471,7 @@ export const CrmPage: React.FC = () => {
                     id="task-cust"
                     value={taskCustomerId}
                     onChange={(e) => setTaskCustomerId(e.target.value)}
-                    className="w-full px-3 py-2 border border-[#D4D4D4] rounded-lg bg-white"
+                    className="w-full min-h-[44px] sm:min-h-0 px-3 py-2 border border-[#D4D4D4] rounded-lg bg-white"
                   >
                     {snapshot.customers.map((c) => (
                       <option key={c.id} value={c.id}>
@@ -486,7 +489,7 @@ export const CrmPage: React.FC = () => {
                     id="task-order"
                     value={taskOrderId}
                     onChange={(e) => setTaskOrderId(e.target.value)}
-                    className="w-full px-3 py-2 border border-[#D4D4D4] rounded-lg bg-white"
+                    className="w-full min-h-[44px] sm:min-h-0 px-3 py-2 border border-[#D4D4D4] rounded-lg bg-white"
                   >
                     <option value="">Sem encomenda específica</option>
                     {snapshot.orders
@@ -509,7 +512,7 @@ export const CrmPage: React.FC = () => {
                     value={taskTitle}
                     onChange={(e) => setTaskTitle(e.target.value)}
                     placeholder="Ex.: Confirmar disponibilidade para entrega amanhã"
-                    className="w-full px-3 py-2 border border-[#D4D4D4] rounded-lg"
+                    className="w-full min-h-[44px] sm:min-h-0 px-3 py-2 border border-[#D4D4D4] rounded-lg"
                   />
                 </div>
 
@@ -522,7 +525,7 @@ export const CrmPage: React.FC = () => {
                     type="date"
                     value={taskDueDate}
                     onChange={(e) => setTaskDueDate(e.target.value)}
-                    className="w-full px-3 py-2 border border-[#D4D4D4] rounded-lg tabular-data"
+                    className="w-full min-h-[44px] sm:min-h-0 px-3 py-2 border border-[#D4D4D4] rounded-lg tabular-data"
                   />
                 </div>
 
@@ -548,7 +551,7 @@ export const CrmPage: React.FC = () => {
                 <button
                   type="submit"
                   disabled={isCreatingTask || isMutating}
-                  className="btn-bercali-primary w-full py-2.5 px-4 rounded-[10px] disabled:opacity-50"
+                  className="btn-bercali-primary w-full min-h-[44px] py-2.5 px-4 rounded-[10px] disabled:opacity-50"
                 >
                   {isCreatingTask ? 'A agendar...' : 'Agendar Tarefa CRM'}
                 </button>
@@ -560,12 +563,12 @@ export const CrmPage: React.FC = () => {
         <>
           {/* Filters & Tag Creator */}
           <div className="bg-white border border-[#E5E5E5] rounded-xl p-4 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-            <div className="flex flex-wrap items-center gap-2.5">
+            <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-2.5">
               <select
                 aria-label="Filtrar CRM por estado de relacionamento"
                 value={stageFilter}
                 onChange={(e) => setStageFilter(e.target.value as 'all' | CrmStage)}
-                className="px-3 py-2 text-xs bg-white border border-[#D4D4D4] rounded-[10px]"
+                className="w-full sm:w-auto min-h-[44px] sm:min-h-0 px-3 py-2 text-xs bg-white border border-[#D4D4D4] rounded-[10px]"
               >
                 <option value="all">Todos os estados de relacionamento</option>
                 {(Object.keys(CRM_STAGE_LABELS) as CrmStage[]).map((st) => (
@@ -579,7 +582,7 @@ export const CrmPage: React.FC = () => {
                 aria-label="Filtrar CRM por etiqueta"
                 value={tagFilter}
                 onChange={(e) => setTagFilter(e.target.value)}
-                className="px-3 py-2 text-xs bg-white border border-[#D4D4D4] rounded-[10px]"
+                className="w-full sm:w-auto min-h-[44px] sm:min-h-0 px-3 py-2 text-xs bg-white border border-[#D4D4D4] rounded-[10px]"
               >
                 <option value="all">Todas as etiquetas</option>
                 {snapshot.customerTags.map((t) => (
@@ -589,7 +592,7 @@ export const CrmPage: React.FC = () => {
                 ))}
               </select>
 
-              <label className="inline-flex items-center gap-2 px-3 py-2 rounded-[10px] border border-[#D4D4D4] text-xs font-medium text-[#0A0A0A] cursor-pointer">
+              <label className="w-full sm:w-auto min-h-[44px] sm:min-h-0 inline-flex items-center gap-2 px-3 py-2 rounded-[10px] border border-[#D4D4D4] text-xs font-medium text-[#0A0A0A] cursor-pointer">
                 <input
                   type="checkbox"
                   checked={onlyPendingOrdersFilter}
@@ -600,19 +603,22 @@ export const CrmPage: React.FC = () => {
             </div>
 
             {canWrite && (
-              <form onSubmit={(e) => void handleCreateTag(e)} className="flex items-center gap-2">
+              <form
+                onSubmit={(e) => void handleCreateTag(e)}
+                className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full lg:w-auto"
+              >
                 <input
                   type="text"
                   value={newTagName}
                   onChange={(e) => setNewTagName(e.target.value)}
                   aria-label="Nome da nova etiqueta CRM"
                   placeholder="Nova etiqueta (ex.: VIP)"
-                  className="px-3 py-2 text-xs border border-[#D4D4D4] rounded-[10px] w-48"
+                  className="min-h-[44px] sm:min-h-0 px-3 py-2 text-xs border border-[#D4D4D4] rounded-[10px] w-full sm:w-48"
                 />
                 <button
                   type="submit"
                   disabled={isCreatingTag || isMutating}
-                  className="px-3 py-2 text-xs font-semibold bg-[#0A0A0A] text-white rounded-[10px] inline-flex items-center gap-1 whitespace-nowrap disabled:opacity-50"
+                  className="min-h-[44px] sm:min-h-0 px-3 py-2 text-xs font-semibold bg-[#0A0A0A] text-white rounded-[10px] inline-flex items-center justify-center gap-1 whitespace-nowrap disabled:opacity-50"
                 >
                   <Plus className="w-3.5 h-3.5 text-[#FF8A00]" />
                   <span>{isCreatingTag ? 'A criar...' : 'Criar etiqueta'}</span>
@@ -733,20 +739,20 @@ export const CrmPage: React.FC = () => {
               </div>
 
               {activeCustomer && (
-                <div className="lg:col-span-7 bg-white border border-[#E5E5E5] rounded-xl p-5 space-y-5 text-xs">
+                <div className="lg:col-span-7 bg-white border border-[#E5E5E5] rounded-xl p-4 sm:p-5 space-y-5 text-xs">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[#E5E5E5]">
-                    <div>
-                      <h2 className="font-brand font-bold text-lg text-[#0A0A0A]">
+                    <div className="min-w-0">
+                      <h2 className="font-brand font-bold text-lg text-[#0A0A0A] break-words">
                         {activeCustomer.name}
                       </h2>
-                      <p className="text-[#525252]">
+                      <p className="text-[#525252] break-words">
                         {canViewPii ? activeCustomer.phoneNormalized : 'Contacto protegido'} · Último contacto:{' '}
                         {formatDateTimePt(activeCustomer.lastContactAt)}
                       </p>
                     </div>
 
                     {canWrite && (
-                      <div>
+                      <div className="w-full sm:w-auto">
                         <label htmlFor="crm-stage-change" className="sr-only">
                           Alterar estado de relacionamento
                         </label>
@@ -768,7 +774,7 @@ export const CrmPage: React.FC = () => {
                               )
                             )
                           }
-                          className="px-3 py-2 border border-[#FF8A00] rounded-[10px] font-semibold text-[#0A0A0A] bg-white disabled:opacity-50"
+                          className="w-full sm:w-auto min-h-[44px] sm:min-h-0 px-3 py-2 border border-[#FF8A00] rounded-[10px] font-semibold text-[#0A0A0A] bg-white disabled:opacity-50"
                         >
                           {(Object.keys(CRM_STAGE_LABELS) as CrmStage[]).map((st) => (
                             <option key={st} value={st}>
@@ -783,7 +789,7 @@ export const CrmPage: React.FC = () => {
                   {/* Custom Tags Assignment */}
                   <div>
                     <p className="font-semibold text-[#0A0A0A] flex items-center gap-1.5 mb-2">
-                      <Tag className="w-3.5 h-3.5 text-[#FF8A00]" />
+                      <Tag className="w-3.5 h-3.5 text-[#FF8A00] shrink-0" />
                       <span>Etiquetas atribuídas (clica para ativar/desativar)</span>
                     </p>
                     {snapshot.customerTags.length === 0 ? (
@@ -800,7 +806,7 @@ export const CrmPage: React.FC = () => {
                               type="button"
                               disabled={!canWrite || isMutating}
                               onClick={() => void handleToggleCustomerTag(t.id)}
-                              className={`px-3 py-1.5 rounded-lg border text-xs font-medium inline-flex items-center gap-1.5 transition-colors disabled:opacity-50 ${
+                              className={`min-h-[40px] sm:min-h-0 px-3 py-1.5 rounded-lg border text-xs font-medium inline-flex items-center gap-1.5 transition-colors disabled:opacity-50 ${
                                 assigned
                                   ? 'bg-[#0A0A0A] text-white border-[#0A0A0A]'
                                   : 'bg-white text-[#525252] border-[#D4D4D4] hover:border-[#0A0A0A]'
@@ -823,9 +829,12 @@ export const CrmPage: React.FC = () => {
                       </p>
                       <div className="divide-y divide-[#E5E5E5]">
                         {activeCustomerTasks.slice(0, 4).map((t) => (
-                          <div key={t.id} className="py-2 flex items-center justify-between gap-2">
-                            <div>
-                              <p className="font-medium text-[#0A0A0A]">{t.title}</p>
+                          <div
+                            key={t.id}
+                            className="py-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2"
+                          >
+                            <div className="min-w-0">
+                              <p className="font-medium text-[#0A0A0A] break-words">{t.title}</p>
                               <p className="text-[11px] text-[#737373] tabular-data">
                                 {t.status === 'completed'
                                   ? 'Concluída'
@@ -839,7 +848,7 @@ export const CrmPage: React.FC = () => {
                                 type="button"
                                 disabled={isMutating}
                                 onClick={() => void updateCrmTaskStatus(t.id, 'completed')}
-                                className="px-2.5 py-1 rounded bg-[#0A0A0A] text-white text-[11px] font-semibold"
+                                className="min-h-[40px] sm:min-h-0 px-3 py-1.5 sm:px-2.5 sm:py-1 rounded-lg bg-[#0A0A0A] text-white text-[11px] font-semibold self-start sm:self-auto shrink-0"
                               >
                                 Concluir
                               </button>
@@ -866,7 +875,7 @@ export const CrmPage: React.FC = () => {
                           onChange={(e) =>
                             setNoteChannel(e.target.value as CustomerNote['channel'])
                           }
-                          className="px-2.5 py-1.5 bg-white border border-[#D4D4D4] rounded-lg text-xs"
+                          className="w-full sm:w-auto min-h-[44px] sm:min-h-0 px-2.5 py-2 sm:py-1.5 bg-white border border-[#D4D4D4] rounded-lg text-xs"
                         >
                           {(Object.keys(CHANNEL_LABELS) as CustomerNote['channel'][]).map((ch) => (
                             <option key={ch} value={ch}>
@@ -892,7 +901,7 @@ export const CrmPage: React.FC = () => {
                         <button
                           type="submit"
                           disabled={isAddingNote || isMutating}
-                          className="btn-bercali-primary px-4 py-2 rounded-[10px] inline-flex items-center gap-1.5 disabled:opacity-50"
+                          className="btn-bercali-primary w-full sm:w-auto min-h-[44px] sm:min-h-0 px-4 py-2.5 sm:py-2 rounded-[10px] inline-flex items-center justify-center gap-1.5 disabled:opacity-50"
                         >
                           <Send className="w-3.5 h-3.5" />
                           <span>{isAddingNote ? 'A guardar...' : 'Adicionar ao Histórico'}</span>
@@ -914,13 +923,13 @@ export const CrmPage: React.FC = () => {
                       <div className="space-y-2.5 max-h-64 overflow-y-auto">
                         {activeNotes.map((n) => (
                           <div key={n.id} className="p-3 rounded-[10px] border border-[#E5E5E5]">
-                            <div className="flex items-center justify-between gap-2 text-[11px] text-[#525252] mb-1">
-                              <span className="font-semibold text-[#0A0A0A]">
+                            <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] text-[#525252] mb-1">
+                              <span className="font-semibold text-[#0A0A0A] break-words">
                                 {CHANNEL_LABELS[n.channel]} · {n.authorName}
                               </span>
                               <span className="tabular-data">{formatDateTimePt(n.createdAt)}</span>
                             </div>
-                            <p className="text-[#0A0A0A] leading-relaxed">{n.content}</p>
+                            <p className="text-[#0A0A0A] leading-relaxed break-words">{n.content}</p>
                           </div>
                         ))}
                       </div>

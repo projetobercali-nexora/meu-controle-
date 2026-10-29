@@ -16,17 +16,52 @@
 }
 
 @layer base {
+  html,
+  body {
+    max-width: 100%;
+    overflow-x: clip;
+  }
+
   html {
     font-family: var(--font-sans);
     background-color: #F4F4F4;
     color: #0A0A0A;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    -webkit-text-size-adjust: 100%;
   }
 
   h1, h2, h3, h4, .font-brand {
     font-family: var(--font-display);
   }
+}
+
+.pt-safe {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.pl-safe {
+  padding-left: env(safe-area-inset-left, 0px);
+}
+
+.pr-safe {
+  padding-right: env(safe-area-inset-right, 0px);
+}
+
+.pb-safe-main {
+  padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
+}
+
+.bottom-safe-toast {
+  bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+}
+
+.top-below-header-mobile {
+  top: calc(3.5rem + env(safe-area-inset-top, 0px) + 0.5rem);
 }
 
 .metric-num {

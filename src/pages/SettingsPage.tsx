@@ -193,7 +193,7 @@ export const SettingsPage: React.FC = () => {
       <form onSubmit={(e) => void handleSave(e)} noValidate className="space-y-6 text-xs">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           {/* Brand, Storefront Copy & Official Contacts */}
-          <div className="lg:col-span-7 bg-white border border-[#E5E5E5] rounded-xl p-6 space-y-5">
+          <div className="lg:col-span-7 bg-white border border-[#E5E5E5] rounded-xl p-4 sm:p-6 space-y-5">
             <div className="flex flex-col sm:flex-row sm:items-center gap-4 pb-5 border-b border-[#E5E5E5]">
               <BrandLogo variant="card" />
               <div>
@@ -217,7 +217,7 @@ export const SettingsPage: React.FC = () => {
                   disabled={!canWrite || isSaving}
                   value={commercialName}
                   onChange={(e) => setCommercialName(e.target.value)}
-                  className="w-full px-3 py-2 border border-[#D4D4D4] rounded-[10px]"
+                  className="w-full min-h-[44px] sm:min-h-0 px-3 py-2 border border-[#D4D4D4] rounded-[10px]"
                 />
               </div>
               <div>
@@ -229,7 +229,7 @@ export const SettingsPage: React.FC = () => {
                   type="text"
                   disabled
                   value="Kz — Kwanza Angolano (AOA)"
-                  className="w-full px-3 py-2 bg-[#F4F4F4] border border-[#E5E5E5] rounded-[10px] font-semibold text-[#0A0A0A]"
+                  className="w-full min-h-[44px] sm:min-h-0 px-3 py-2 bg-[#F4F4F4] border border-[#E5E5E5] rounded-[10px] font-semibold text-[#0A0A0A]"
                 />
               </div>
             </div>
@@ -244,7 +244,7 @@ export const SettingsPage: React.FC = () => {
                 disabled={!canWrite || isSaving}
                 value={slogan}
                 onChange={(e) => setSlogan(e.target.value)}
-                className="w-full px-3 py-2 border border-[#D4D4D4] rounded-[10px]"
+                className="w-full min-h-[44px] sm:min-h-0 px-3 py-2 border border-[#D4D4D4] rounded-[10px]"
               />
             </div>
 
@@ -267,7 +267,7 @@ export const SettingsPage: React.FC = () => {
               <strong className="text-[#0A0A0A]">Contactos reais e consistentes na loja:</strong> Nunca são gerados números ou e-mails fictícios. Se um contacto ficar em branco, a Loja Online oculta automaticamente o respetivo link até ser configurado aqui.
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label htmlFor="set-phone" className="block font-semibold text-[#0A0A0A] mb-1">
                   Telefone comercial
@@ -279,7 +279,7 @@ export const SettingsPage: React.FC = () => {
                   value={officialPhone}
                   onChange={(e) => setOfficialPhone(e.target.value)}
                   placeholder="Ex.: +244 9XX XXX XXX"
-                  className="w-full px-3 py-2 font-mono border border-[#D4D4D4] rounded-[10px]"
+                  className="w-full min-h-[44px] sm:min-h-0 px-3 py-2 font-mono border border-[#D4D4D4] rounded-[10px]"
                 />
               </div>
               <div>
@@ -294,7 +294,7 @@ export const SettingsPage: React.FC = () => {
                     value={officialWhatsApp}
                     onChange={(e) => setOfficialWhatsApp(e.target.value)}
                     placeholder="+244 923 456 789"
-                    className={`w-full px-3 py-2 font-mono border rounded-[10px] ${
+                    className={`w-full min-h-[44px] sm:min-h-0 px-3 py-2 font-mono border rounded-[10px] ${
                       waInvalidWarning ? 'border-[#EF4444] bg-[#FEF2F2]' : 'border-[#D4D4D4]'
                     }`}
                   />
@@ -308,7 +308,7 @@ export const SettingsPage: React.FC = () => {
                       href={testWhatsAppDirectUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#0A0A0A] bg-white hover:bg-[#F4F4F4] font-semibold text-[11px] text-[#0A0A0A] whitespace-nowrap transition-colors"
+                      className="min-h-[44px] sm:min-h-0 inline-flex items-center gap-1.5 px-3 py-2 sm:py-1.5 rounded-lg border border-[#0A0A0A] bg-white hover:bg-[#F4F4F4] font-semibold text-[11px] text-[#0A0A0A] whitespace-nowrap transition-colors"
                     >
                       <span>Testar WhatsApp</span>
                       <ExternalLink className="w-3 h-3 text-[#FF8A00]" />
@@ -318,7 +318,7 @@ export const SettingsPage: React.FC = () => {
                       type="button"
                       disabled
                       title="Introduz um número angolano válido (+244 e 9 dígitos) para testar"
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#E5E5E5] bg-[#F4F4F4] font-semibold text-[11px] text-[#8A8A8A] whitespace-nowrap cursor-not-allowed"
+                      className="min-h-[44px] sm:min-h-0 inline-flex items-center gap-1.5 px-3 py-2 sm:py-1.5 rounded-lg border border-[#E5E5E5] bg-[#F4F4F4] font-semibold text-[11px] text-[#8A8A8A] whitespace-nowrap cursor-not-allowed"
                     >
                       <span>Testar WhatsApp</span>
                       <ExternalLink className="w-3 h-3" />
@@ -337,13 +337,13 @@ export const SettingsPage: React.FC = () => {
                   value={commercialEmail}
                   onChange={(e) => setCommercialEmail(e.target.value)}
                   placeholder="Ex.: contacto@bercali.ao"
-                  className="w-full px-3 py-2 border border-[#D4D4D4] rounded-[10px]"
+                  className="w-full min-h-[44px] sm:min-h-0 px-3 py-2 border border-[#D4D4D4] rounded-[10px]"
                 />
               </div>
             </div>
 
             {/* Redes Sociais */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label htmlFor="set-ig" className="block font-semibold text-[#0A0A0A] mb-1">
                   Instagram (URL https://)
@@ -355,7 +355,7 @@ export const SettingsPage: React.FC = () => {
                   value={instagramUrl}
                   onChange={(e) => setInstagramUrl(e.target.value)}
                   placeholder="https://instagram.com/..."
-                  className="w-full px-3 py-2 border border-[#D4D4D4] rounded-[10px]"
+                  className="w-full min-h-[44px] sm:min-h-0 px-3 py-2 border border-[#D4D4D4] rounded-[10px]"
                 />
               </div>
               <div>
@@ -369,7 +369,7 @@ export const SettingsPage: React.FC = () => {
                   value={facebookUrl}
                   onChange={(e) => setFacebookUrl(e.target.value)}
                   placeholder="https://facebook.com/..."
-                  className="w-full px-3 py-2 border border-[#D4D4D4] rounded-[10px]"
+                  className="w-full min-h-[44px] sm:min-h-0 px-3 py-2 border border-[#D4D4D4] rounded-[10px]"
                 />
               </div>
               <div>
@@ -383,7 +383,7 @@ export const SettingsPage: React.FC = () => {
                   value={tiktokUrl}
                   onChange={(e) => setTiktokUrl(e.target.value)}
                   placeholder="https://tiktok.com/@..."
-                  className="w-full px-3 py-2 border border-[#D4D4D4] rounded-[10px]"
+                  className="w-full min-h-[44px] sm:min-h-0 px-3 py-2 border border-[#D4D4D4] rounded-[10px]"
                 />
               </div>
             </div>
@@ -425,7 +425,7 @@ export const SettingsPage: React.FC = () => {
                   disabled={!canWrite || isSaving}
                   value={defaultLowStock}
                   onChange={(e) => setDefaultLowStock(e.target.value)}
-                  className="w-full px-3 py-2 border border-[#D4D4D4] rounded-[10px] tabular-data"
+                  className="w-full min-h-[44px] sm:min-h-0 px-3 py-2 border border-[#D4D4D4] rounded-[10px] tabular-data"
                 />
               </div>
               <div>
@@ -438,7 +438,7 @@ export const SettingsPage: React.FC = () => {
                   disabled={!canWrite || isSaving}
                   value={orderPrefix}
                   onChange={(e) => setOrderPrefix(e.target.value)}
-                  className="w-full px-3 py-2 font-mono border border-[#D4D4D4] rounded-[10px]"
+                  className="w-full min-h-[44px] sm:min-h-0 px-3 py-2 font-mono border border-[#D4D4D4] rounded-[10px]"
                 />
               </div>
             </div>
@@ -465,8 +465,8 @@ export const SettingsPage: React.FC = () => {
           {/* Storefront Availability, Banner, Delivery Settings & Connected Services Status */}
           <div className="lg:col-span-5 space-y-6">
             {/* Estado Operacional da Loja Online */}
-            <div className="bg-white border border-[#E5E5E5] rounded-xl p-6 space-y-4">
-              <div className="flex items-center justify-between gap-2">
+            <div className="bg-white border border-[#E5E5E5] rounded-xl p-4 sm:p-6 space-y-4">
+              <div className="flex flex-wrap items-center justify-between gap-2">
                 <h2 className="font-brand font-bold text-base text-[#0A0A0A]">
                   Estado da Loja Online e Avisos
                 </h2>
@@ -512,12 +512,13 @@ export const SettingsPage: React.FC = () => {
               </div>
 
               <div className="pt-3 border-t border-[#E5E5E5] space-y-2.5">
-                <label className="inline-flex items-center gap-2 font-semibold text-[#0A0A0A] cursor-pointer">
+                <label className="inline-flex items-start sm:items-center gap-2 font-semibold text-[#0A0A0A] cursor-pointer">
                   <input
                     type="checkbox"
                     disabled={!canWrite || isSaving}
                     checked={promotionalBannerActive}
                     onChange={(e) => setPromotionalBannerActive(e.target.checked)}
+                    className="mt-0.5 sm:mt-0"
                   />
                   <span>Apresentar barra promocional / aviso no topo da loja</span>
                 </label>
@@ -528,12 +529,12 @@ export const SettingsPage: React.FC = () => {
                   value={promotionalBannerText}
                   onChange={(e) => setPromotionalBannerText(e.target.value)}
                   placeholder="Ex.: Entregas rápidas em Luanda · Pagamento na entrega ou transferência"
-                  className="w-full px-3 py-2 border border-[#D4D4D4] rounded-[10px]"
+                  className="w-full min-h-[44px] sm:min-h-0 px-3 py-2 border border-[#D4D4D4] rounded-[10px]"
                 />
               </div>
             </div>
 
-            <div className="bg-white border border-[#E5E5E5] rounded-xl p-6 space-y-4">
+            <div className="bg-white border border-[#E5E5E5] rounded-xl p-4 sm:p-6 space-y-4">
               <h2 className="font-brand font-bold text-base text-[#0A0A0A]">
                 Zonas e Taxas de Entrega (Kz)
               </h2>
@@ -549,7 +550,7 @@ export const SettingsPage: React.FC = () => {
                   value={deliveryGeneralInfo}
                   onChange={(e) => setDeliveryGeneralInfo(e.target.value)}
                   placeholder="Ex.: Entregas ao domicílio em Luanda e envio interprovincial sob consulta"
-                  className="w-full px-3 py-2 border border-[#D4D4D4] rounded-[10px]"
+                  className="w-full min-h-[44px] sm:min-h-0 px-3 py-2 border border-[#D4D4D4] rounded-[10px]"
                 />
               </div>
 
@@ -571,7 +572,7 @@ export const SettingsPage: React.FC = () => {
                           className="mt-0.5"
                         />
                         <span className="min-w-0">
-                          <span className="font-semibold text-[#0A0A0A] block truncate">
+                          <span className="font-semibold text-[#0A0A0A] block break-words">
                             {z.name}
                             {z.active === false && (
                               <span className="font-normal text-[#737373]"> · Oculta na loja</span>
@@ -589,7 +590,7 @@ export const SettingsPage: React.FC = () => {
                             type="button"
                             onClick={() => setZones((prev) => prev.filter((x) => x.id !== z.id))}
                             aria-label={`Remover zona ${z.name}`}
-                            className="text-[#B91C1C] p-1 hover:bg-[#FEF2F2] rounded"
+                            className="min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 text-[#B91C1C] p-2 sm:p-1 inline-flex items-center justify-center hover:bg-[#FEF2F2] rounded-lg"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
@@ -608,29 +609,29 @@ export const SettingsPage: React.FC = () => {
                     value={newZoneName}
                     onChange={(e) => setNewZoneName(e.target.value)}
                     placeholder="Nome da zona (ex.: Talatona / Maianga)"
-                    className="w-full px-3 py-2 border border-[#D4D4D4] rounded-lg"
+                    className="w-full min-h-[44px] sm:min-h-0 px-3 py-2 border border-[#D4D4D4] rounded-lg"
                   />
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     <input
                       type="number"
                       min="0"
                       value={newZoneFee}
                       onChange={(e) => setNewZoneFee(e.target.value)}
                       placeholder="Taxa (Kz)"
-                      className="px-3 py-2 border border-[#D4D4D4] rounded-lg tabular-data"
+                      className="min-h-[44px] sm:min-h-0 px-3 py-2 border border-[#D4D4D4] rounded-lg tabular-data"
                     />
                     <input
                       type="text"
                       value={newZoneTime}
                       onChange={(e) => setNewZoneTime(e.target.value)}
                       placeholder="Prazo estimado"
-                      className="px-3 py-2 border border-[#D4D4D4] rounded-lg"
+                      className="min-h-[44px] sm:min-h-0 px-3 py-2 border border-[#D4D4D4] rounded-lg"
                     />
                   </div>
                   <button
                     type="button"
                     onClick={handleAddZone}
-                    className="px-3 py-1.5 rounded-lg border border-[#0A0A0A] font-medium inline-flex items-center gap-1 hover:bg-[#F4F4F4]"
+                    className="w-full sm:w-auto min-h-[44px] sm:min-h-0 px-3 py-2 sm:py-1.5 rounded-lg border border-[#0A0A0A] font-medium inline-flex items-center justify-center gap-1 hover:bg-[#F4F4F4]"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     <span>Adicionar zona</span>
@@ -640,7 +641,7 @@ export const SettingsPage: React.FC = () => {
             </div>
 
             {/* Estado Honesto dos Serviços Ligados */}
-            <div className="bg-[#0A0A0A] text-white rounded-xl p-6 space-y-3">
+            <div className="bg-[#0A0A0A] text-white rounded-xl p-4 sm:p-6 space-y-3">
               <div className="flex items-center gap-2 text-[#FFC400]">
                 <Database className="w-4 h-4" />
                 <h2 className="font-brand font-bold text-base">
@@ -688,7 +689,7 @@ export const SettingsPage: React.FC = () => {
                       : 'Não configurado',
                   },
                 ].map((srv) => (
-                  <div key={srv.name} className="py-2 flex items-center justify-between gap-2">
+                  <div key={srv.name} className="py-2 flex flex-wrap items-center justify-between gap-2">
                     <span className="text-[#E5E5E5]">{srv.name}</span>
                     {srv.ok ? (
                       <span className="inline-flex items-center gap-1 text-[#22C55E] whitespace-nowrap">
@@ -730,7 +731,7 @@ export const SettingsPage: React.FC = () => {
             <button
               type="submit"
               disabled={isSaving || isMutating}
-              className="btn-bercali-primary px-6 py-2.5 rounded-[10px] inline-flex items-center gap-2 disabled:opacity-50"
+              className="btn-bercali-primary w-full sm:w-auto min-h-[44px] sm:min-h-0 px-6 py-2.5 rounded-[10px] inline-flex items-center justify-center gap-2 disabled:opacity-50"
             >
               <Save className="w-4 h-4" />
               <span>{isSaving ? 'A guardar...' : 'Guardar Configurações Gerais'}</span>
@@ -744,7 +745,7 @@ export const SettingsPage: React.FC = () => {
 
       {/* Shared Data Model Blueprint (14 Entities) */}
       <div className="bg-white border border-[#E5E5E5] rounded-xl overflow-hidden">
-        <div className="p-5 border-b border-[#E5E5E5]">
+        <div className="p-4 sm:p-5 border-b border-[#E5E5E5]">
           <h2 className="font-brand font-bold text-base text-[#0A0A0A]">
             Arquitetura PostgreSQL Implementada (14 Tabelas + RLS)
           </h2>
@@ -752,7 +753,27 @@ export const SettingsPage: React.FC = () => {
             Estrutura criada pelas migrações versionadas em <span className="font-mono">/supabase/migrations</span>, preparada para partilha futura segura com a loja online.
           </p>
         </div>
-        <div className="overflow-x-auto">
+
+        {/* Mobile Stacked Cards */}
+        <div className="md:hidden divide-y divide-[#E5E5E5] text-xs">
+          {PLANNED_SHARED_SCHEMA.map((tb) => (
+            <div key={tb.tableName} className="p-4 space-y-1.5">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <span className="font-mono font-bold text-[#0A0A0A]">{tb.tableName}</span>
+                <span className="text-[11px] font-medium text-[#525252]">
+                  {tb.sharedWithPublicStore ? 'Loja + Painel' : 'Exclusiva Painel'}
+                </span>
+              </div>
+              <p className="text-[#525252] leading-relaxed">{tb.responsibility}</p>
+              <p className="text-[11px] text-[#737373] leading-relaxed">
+                <strong className="text-[#0A0A0A]">RLS:</strong> {tb.rlsPolicySummary}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        {/* Desktop Table */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
               <tr className="border-b border-[#E5E5E5] bg-[#FAFAFA] text-[11px] font-semibold text-[#525252]">

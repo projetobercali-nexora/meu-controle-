@@ -211,12 +211,12 @@ export const ReportsPage: React.FC = () => {
           Exportação CSV protegida por sessão autenticada e permissões RBAC (codificação UTF-8 compatível com Excel).
         </p>
         {canExport ? (
-          <div className="flex flex-wrap items-center gap-2 shrink-0">
+          <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2 shrink-0">
             <button
               type="button"
               disabled={filteredOrders.length === 0}
               onClick={handleExportOrdersCsv}
-              className="px-3.5 py-2 rounded-[10px] border border-[#0A0A0A] font-semibold text-[#0A0A0A] hover:bg-[#F4F4F4] inline-flex items-center gap-1.5 whitespace-nowrap disabled:opacity-40"
+              className="min-h-[44px] sm:min-h-0 px-3.5 py-2 rounded-[10px] border border-[#0A0A0A] font-semibold text-[#0A0A0A] hover:bg-[#F4F4F4] inline-flex items-center justify-center gap-1.5 whitespace-nowrap disabled:opacity-40"
             >
               <Download className="w-3.5 h-3.5 text-[#FF8A00]" />
               <span>Exportar Encomendas (CSV)</span>
@@ -225,7 +225,7 @@ export const ReportsPage: React.FC = () => {
               type="button"
               disabled={productPerformance.length === 0}
               onClick={handleExportProductsCsv}
-              className="btn-bercali-primary px-3.5 py-2 rounded-[10px] inline-flex items-center gap-1.5 whitespace-nowrap disabled:opacity-40"
+              className="btn-bercali-primary min-h-[44px] sm:min-h-0 px-3.5 py-2 rounded-[10px] inline-flex items-center justify-center gap-1.5 whitespace-nowrap disabled:opacity-40"
             >
               <Download className="w-3.5 h-3.5" />
               <span>Exportar Produtos (CSV)</span>
@@ -277,7 +277,7 @@ export const ReportsPage: React.FC = () => {
                 <span>Clientes Novos vs Recorrentes</span>
                 <Users className="w-4 h-4 text-[#FF8A00]" />
               </div>
-              <p className="metric-num font-bold text-2xl text-[#0A0A0A]">
+              <p className="metric-num font-bold text-xl sm:text-2xl text-[#0A0A0A] break-words">
                 {customerCohort.newCustomers} novos · {customerCohort.recurringCustomers} recorrentes
               </p>
               <p className="text-xs text-[#525252] mt-1.5 tabular-data">
@@ -288,7 +288,7 @@ export const ReportsPage: React.FC = () => {
 
           {/* Desempenho de Produtos */}
           <div className="bg-white border border-[#E5E5E5] rounded-xl overflow-hidden">
-            <div className="p-5 border-b border-[#E5E5E5]">
+            <div className="p-4 sm:p-5 border-b border-[#E5E5E5]">
               <h2 className="font-brand font-bold text-base text-[#0A0A0A]">
                 Desempenho dos Produtos
               </h2>
@@ -299,42 +299,86 @@ export const ReportsPage: React.FC = () => {
             {productPerformance.length === 0 ? (
               <p className="p-6 text-xs text-[#737373]">Ainda não existem produtos registados.</p>
             ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse">
-                  <thead>
-                    <tr className="border-b border-[#E5E5E5] bg-[#FAFAFA] text-[11px] font-semibold text-[#525252]">
-                      <th className="py-3 px-4">Produto</th>
-                      <th className="py-3 px-4">SKU</th>
-                      <th className="py-3 px-4 text-right">Unid. Confirmadas</th>
-                      <th className="py-3 px-4 text-right">Receita Confirmada (Kz)</th>
-                      <th className="py-3 px-4 text-right">Unid. Pendentes</th>
-                      <th className="py-3 px-4 text-right">Stock Atual</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-[#E5E5E5] text-xs">
-                    {productPerformance.map((row) => (
-                      <tr key={row.product.id} className="hover:bg-[#FAFAFA]">
-                        <td className="py-3 px-4 font-medium text-[#0A0A0A]">
-                          {row.product.name}
-                        </td>
-                        <td className="py-3 px-4 font-mono text-[#525252]">{row.product.sku}</td>
-                        <td className="py-3 px-4 text-right metric-num font-bold text-[#0A0A0A]">
-                          {row.confirmedUnits}
-                        </td>
-                        <td className="py-3 px-4 text-right metric-num font-bold text-[#15803D]">
+              <>
+                {/* Mobile Stacked Cards (< md) */}
+                <div className="md:hidden divide-y divide-[#E5E5E5] text-xs">
+                  {productPerformance.map((row) => (
+                    <div key={row.product.id} className="p-4 space-y-2.5">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0">
+                          <p className="font-semibold text-[#0A0A0A] break-words leading-snug">
+                            {row.product.name}
+                          </p>
+                          <p className="font-mono text-[11px] text-[#525252] mt-0.5 break-all">
+                            {row.product.sku}
+                          </p>
+                        </div>
+                        <span className="metric-num font-bold text-[#15803D] shrink-0">
                           {formatKwanza(row.confirmedRevenueKz)}
-                        </td>
-                        <td className="py-3 px-4 text-right tabular-data text-[#B45309]">
-                          {row.pendingUnits}
-                        </td>
-                        <td className="py-3 px-4 text-right font-mono text-[#0A0A0A]">
-                          {row.product.trackStock ? `${row.product.stockQuantity} un.` : 'Livre'}
-                        </td>
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-3 gap-2 pt-2 border-t border-[#F4F4F4] text-[11px]">
+                        <div>
+                          <span className="text-[#737373] block">Confirmadas</span>
+                          <span className="metric-num font-bold text-[#0A0A0A]">
+                            {row.confirmedUnits} un.
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-[#737373] block">Pendentes</span>
+                          <span className="tabular-data font-semibold text-[#B45309]">
+                            {row.pendingUnits} un.
+                          </span>
+                        </div>
+                        <div className="text-right">
+                          <span className="text-[#737373] block">Stock</span>
+                          <span className="font-mono font-medium text-[#0A0A0A]">
+                            {row.product.trackStock ? `${row.product.stockQuantity} un.` : 'Livre'}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Desktop Table (md+) */}
+                <div className="hidden md:block overflow-x-auto">
+                  <table className="w-full text-left border-collapse">
+                    <thead>
+                      <tr className="border-b border-[#E5E5E5] bg-[#FAFAFA] text-[11px] font-semibold text-[#525252]">
+                        <th className="py-3 px-4">Produto</th>
+                        <th className="py-3 px-4">SKU</th>
+                        <th className="py-3 px-4 text-right">Unid. Confirmadas</th>
+                        <th className="py-3 px-4 text-right">Receita Confirmada (Kz)</th>
+                        <th className="py-3 px-4 text-right">Unid. Pendentes</th>
+                        <th className="py-3 px-4 text-right">Stock Atual</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                    </thead>
+                    <tbody className="divide-y divide-[#E5E5E5] text-xs">
+                      {productPerformance.map((row) => (
+                        <tr key={row.product.id} className="hover:bg-[#FAFAFA]">
+                          <td className="py-3 px-4 font-medium text-[#0A0A0A]">
+                            {row.product.name}
+                          </td>
+                          <td className="py-3 px-4 font-mono text-[#525252]">{row.product.sku}</td>
+                          <td className="py-3 px-4 text-right metric-num font-bold text-[#0A0A0A]">
+                            {row.confirmedUnits}
+                          </td>
+                          <td className="py-3 px-4 text-right metric-num font-bold text-[#15803D]">
+                            {formatKwanza(row.confirmedRevenueKz)}
+                          </td>
+                          <td className="py-3 px-4 text-right tabular-data text-[#B45309]">
+                            {row.pendingUnits}
+                          </td>
+                          <td className="py-3 px-4 text-right font-mono text-[#0A0A0A]">
+                            {row.product.trackStock ? `${row.product.stockQuantity} un.` : 'Livre'}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </>
             )}
           </div>
 
@@ -385,9 +429,9 @@ export const ReportsPage: React.FC = () => {
                 O painel não inventa métricas de campanhas, cliques ou ROAS. Os resultados publicitários reais dependem da ligação da loja pública e consulta no Gestor de Anúncios da Meta.
               </p>
               <div className="p-3.5 rounded-[10px] bg-[#F4F4F4] space-y-2">
-                <div className="flex justify-between">
-                  <span className="text-[#525252]">Meta Pixel ID</span>
-                  <span className="font-mono font-semibold text-[#0A0A0A]">
+                <div className="flex justify-between gap-2">
+                  <span className="text-[#525252] shrink-0">Meta Pixel ID</span>
+                  <span className="font-mono font-semibold text-[#0A0A0A] break-all text-right">
                     {snapshot.marketingSettings.pixelId || 'Não configurado'}
                   </span>
                 </div>

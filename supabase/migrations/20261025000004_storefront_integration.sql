@@ -1,13 +1,52 @@
 -- =============================================================================
--- BERCALI STORE — INTEGRAÇÃO PAINEL ADMINISTRATIVO <-> LOJA ONLINE
--- Migração 004: Colunas de Montra, RLS Público Seguro e Checkout RPC Validado
+-- BERCALI STORE — INTEGRAÇÃO PAINEL ADMINISTRATIVO <-> LOJA ONLINE + REALTIME
+-- Ficheiro: supabase/migrations/20261025000004_storefront_integration.sql
 -- =============================================================================
 -- NOTA DE SEGURANÇA E INTEGRIDADE:
--- Este script é 100% idempotente e NÃO apaga tabelas, produtos, categorias,
--- imagens do Supabase Storage nem encomendas existentes.
+-- 1. Script 100% idempotente (seguro para executar múltiplas vezes no SQL Editor).
+-- 2. NÃO apaga tabelas, dados, produtos, categorias, media nem encomendas existentes.
+-- 3. Ativa políticas RLS públicas estritas para a Loja Online (store_settings,
+--    categories, products e product_media), mantendo dados internos privados.
+-- 4. Cria/atualiza a função RPC public.create_storefront_order (SECURITY DEFINER)
+--    e atribui permissões GRANT EXECUTE a anon e authenticated.
+-- 5. Adiciona public.orders à publicação supabase_realtime sem erro se já lá estiver.
 -- =============================================================================
 
 begin;
+
+create extension if not exists pgcrypto;
+
+-- -----------------------------------------------------------------------------
+-- 0. Função auxiliar de normalização telefónica angolana (+2449XXXXXXXX)
+-- -----------------------------------------------------------------------------
+create or replace function public.normalize_angola_phone(raw_phone text)
+returns text
+language plpgsql
+immutable
+as $$
+declare
+  digits text;
+begin
+  digits := regexp_replace(coalesce(raw_phone, ''), '\D', '', 'g');
+  if digits = '' then
+    return '';
+  end if;
+
+  if digits like '00244%' and char_length(digits) = 14 then
+    return '+244' || substring(digits from 6);
+  end if;
+
+  if digits like '244%' and char_length(digits) = 12 then
+    return '+' || digits;
+  end if;
+
+  if char_length(digits) = 9 and digits like '9%' then
+    return '+244' || digits;
+  end if;
+
+  return '+' || digits;
+end;
+$$;
 
 -- -----------------------------------------------------------------------------
 -- 1. Campos de destaque e ordenação na montra pública (products)
@@ -22,7 +61,7 @@ create index if not exists idx_products_storefront_order
   on public.products(status, is_featured desc, sort_order asc, created_at desc);
 
 -- -----------------------------------------------------------------------------
--- 2. Suporte à origem 'website' e proteção contra duplicação por duplo clique (orders)
+-- 2. Suporte à origem 'website', proteção contra duplo clique (orders) e índice CRM
 -- -----------------------------------------------------------------------------
 alter table public.orders
   add column if not exists idempotency_key text;
@@ -30,6 +69,10 @@ alter table public.orders
 create unique index if not exists idx_orders_idempotency_key
   on public.orders(idempotency_key)
   where idempotency_key is not null and btrim(idempotency_key) <> '';
+
+create unique index if not exists idx_crm_tasks_unique_open_order
+  on public.crm_tasks(order_id)
+  where order_id is not null and status in ('pending', 'in_progress');
 
 do $$
 declare
@@ -42,13 +85,40 @@ begin
       and c.contype = 'c'
       and pg_get_constraintdef(c.oid) ilike '%source%'
   loop
-    execute format('alter table public.orders drop constraint %I', r.conname);
+    execute format('alter table public.orders drop constraint if exists %I', r.conname);
   end loop;
 end;
 $$;
 
 alter table public.orders
+  drop constraint if exists orders_source_check;
+
+alter table public.orders
   add constraint orders_source_check check (
+    source in ('website', 'whatsapp_store', 'whatsapp_direct', 'instagram', 'manual_admin')
+  );
+
+do $$
+declare
+  r record;
+begin
+  for r in
+    select c.conname
+    from pg_constraint c
+    where c.conrelid = 'public.customers'::regclass
+      and c.contype = 'c'
+      and pg_get_constraintdef(c.oid) ilike '%source%'
+  loop
+    execute format('alter table public.customers drop constraint if exists %I', r.conname);
+  end loop;
+end;
+$$;
+
+alter table public.customers
+  drop constraint if exists customers_source_check;
+
+alter table public.customers
+  add constraint customers_source_check check (
     source in ('website', 'whatsapp_store', 'whatsapp_direct', 'instagram', 'manual_admin')
   );
 
@@ -57,6 +127,11 @@ alter table public.orders
 -- Remove políticas SELECT genéricas ("USING (true)") caso tenham sido criadas
 -- manualmente, garantindo que produtos/categorias inativos nunca ficam visíveis.
 -- -----------------------------------------------------------------------------
+alter table public.categories enable row level security;
+alter table public.products enable row level security;
+alter table public.product_media enable row level security;
+alter table public.store_settings enable row level security;
+
 do $$
 declare
   pol record;
@@ -80,12 +155,14 @@ end;
 $$;
 
 -- 3.1 Categorias: leitura pública APENAS de categorias ativas
+drop policy if exists "categories_select_public_active" on public.categories;
 create policy "categories_select_public_active"
   on public.categories for select
   to anon, authenticated
   using (is_active = true);
 
 -- 3.2 Produtos: leitura pública APENAS de produtos publicados ('active') em categorias ativas
+drop policy if exists "products_select_public_published" on public.products;
 create policy "products_select_public_published"
   on public.products for select
   to anon, authenticated
@@ -100,6 +177,7 @@ create policy "products_select_public_published"
   );
 
 -- 3.3 Media de Produtos: leitura pública APENAS de produtos publicados em categorias ativas
+drop policy if exists "product_media_select_public_published" on public.product_media;
 create policy "product_media_select_public_published"
   on public.product_media for select
   to anon, authenticated
@@ -116,12 +194,17 @@ create policy "product_media_select_public_published"
 
 -- 3.4 Definições Gerais: leitura pública APENAS das chaves públicas da loja
 -- ('operations_preferences' permanece privada para a equipa administrativa)
+drop policy if exists "store_settings_select_public" on public.store_settings;
 create policy "store_settings_select_public"
   on public.store_settings for select
   to anon, authenticated
   using (
     setting_key in ('company_profile', 'delivery_zones', 'storefront_config')
   );
+
+-- Garantir permissões SELECT de esquema/tabela para clientes anon e authenticated
+grant usage on schema public to anon, authenticated;
+grant select on public.categories, public.products, public.product_media, public.store_settings to anon, authenticated;
 
 -- -----------------------------------------------------------------------------
 -- 4. Checkout Público Seguro (SECURITY DEFINER): create_storefront_order
@@ -384,6 +467,10 @@ begin
       raise exception 'A quantidade de cada artigo deve estar entre 1 e 500 unidades.';
     end if;
 
+    if coalesce(v_item ->> 'productId', '') !~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' then
+      raise exception 'Identificador de produto inválido no pedido.';
+    end if;
+
     select * into v_prod
     from public.products
     where id = (v_item ->> 'productId')::uuid
@@ -501,9 +588,36 @@ begin
 end;
 $$;
 
+-- Permissões para a Loja Online (anon + authenticated) invocar create_storefront_order
 grant execute on function public.create_storefront_order(
   text, text, text, text, text, text, numeric, text, text, text, jsonb
 ) to anon, authenticated;
+
+-- -----------------------------------------------------------------------------
+-- 5. Publicação Supabase Realtime na Tabela public.orders (idempotente)
+-- Adiciona public.orders a supabase_realtime sem erro caso já esteja incluída.
+-- -----------------------------------------------------------------------------
+do $$
+begin
+  if not exists (
+    select 1
+    from pg_publication
+    where pubname = 'supabase_realtime'
+  ) then
+    create publication supabase_realtime;
+  end if;
+
+  if not exists (
+    select 1
+    from pg_publication_tables
+    where pubname = 'supabase_realtime'
+      and schemaname = 'public'
+      and tablename = 'orders'
+  ) then
+    alter publication supabase_realtime add table public.orders;
+  end if;
+end;
+$$;
 
 commit;
 

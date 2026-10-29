@@ -101,15 +101,15 @@ export const NotificationSettingsPanel: React.FC = () => {
       {/* Preferências de Notificações em Tempo Real + Som Web Audio API */}
       <section
         aria-labelledby="notif-settings-heading"
-        className="lg:col-span-7 bg-white border border-[#E5E5E5] rounded-xl p-6 space-y-5"
+        className="lg:col-span-7 bg-white border border-[#E5E5E5] rounded-xl p-4 sm:p-6 space-y-5 min-w-0"
       >
-        <div className="flex flex-wrap items-start justify-between gap-3 pb-4 border-b border-[#E5E5E5]">
-          <div>
+        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2.5 pb-4 border-b border-[#E5E5E5]">
+          <div className="min-w-0">
             <h2
               id="notif-settings-heading"
               className="font-brand font-bold text-base text-[#0A0A0A] flex items-center gap-2"
             >
-              <Bell className="w-4 h-4 text-[#FF8A00]" />
+              <Bell className="w-4 h-4 text-[#FF8A00] shrink-0" />
               <span>Notificações em Tempo Real e Som</span>
             </h2>
             <p className="text-[#525252] mt-1 leading-relaxed">
@@ -118,7 +118,7 @@ export const NotificationSettingsPanel: React.FC = () => {
           </div>
 
           {hasOrdersAccess && (
-            <span className="text-[11px] font-medium text-[#525252] whitespace-nowrap">
+            <span className="text-[11px] font-medium text-[#525252] sm:whitespace-nowrap">
               Canal: <strong className="text-[#0A0A0A]">{realtimeLabel}</strong>
             </span>
           )}
@@ -153,11 +153,11 @@ export const NotificationSettingsPanel: React.FC = () => {
                 </p>
               </div>
 
-              <div className="flex flex-wrap items-center gap-2 shrink-0">
+              <div className="grid grid-cols-1 sm:flex sm:flex-wrap items-stretch sm:items-center gap-2 shrink-0">
                 <button
                   type="button"
                   onClick={() => void handleActivateSound()}
-                  className="btn-bercali-primary px-4 py-2 rounded-[10px] inline-flex items-center gap-1.5 whitespace-nowrap"
+                  className="btn-bercali-primary min-h-[44px] sm:min-h-[38px] px-4 py-2 rounded-[10px] inline-flex items-center justify-center gap-1.5 whitespace-nowrap"
                 >
                   <Volume2 className="w-3.5 h-3.5" />
                   <span>Ativar som</span>
@@ -165,7 +165,7 @@ export const NotificationSettingsPanel: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => void triggerTestNotification()}
-                  className="px-3.5 py-2 rounded-[10px] border border-[#0A0A0A] bg-white hover:bg-[#FAFAFA] font-semibold text-[#0A0A0A] inline-flex items-center gap-1.5 whitespace-nowrap transition-colors"
+                  className="min-h-[44px] sm:min-h-[38px] px-3.5 py-2 rounded-[10px] border border-[#0A0A0A] bg-white hover:bg-[#FAFAFA] font-semibold text-[#0A0A0A] inline-flex items-center justify-center gap-1.5 whitespace-nowrap transition-colors"
                 >
                   <Bell className="w-3.5 h-3.5 text-[#FF8A00]" />
                   <span>Testar notificação</span>
@@ -247,20 +247,21 @@ export const NotificationSettingsPanel: React.FC = () => {
                   return (
                     <div
                       key={m.id}
-                      className={`px-3.5 py-2.5 flex items-center justify-between gap-3 ${
+                      className={`px-3.5 py-3 flex items-center justify-between gap-3 ${
                         selected ? 'bg-[#FFF9F0]' : 'bg-white'
                       }`}
                     >
-                      <label className="flex items-center gap-2.5 min-w-0 cursor-pointer flex-1">
+                      <label className="min-h-[44px] sm:min-h-0 flex items-center gap-2.5 min-w-0 cursor-pointer flex-1">
                         <input
                           type="radio"
                           name="bercali-notif-melody"
                           checked={selected}
                           onChange={() => updatePrefs({ melody: m.id })}
+                          className="w-4 h-4 shrink-0 accent-[#FF8A00]"
                         />
                         <span className="min-w-0">
-                          <strong className="block text-[#0A0A0A]">{m.label}</strong>
-                          <span className="text-[11px] text-[#525252]">{m.description}</span>
+                          <strong className="block text-[#0A0A0A] break-words">{m.label}</strong>
+                          <span className="text-[11px] text-[#525252] break-words">{m.description}</span>
                         </span>
                       </label>
 
@@ -268,7 +269,7 @@ export const NotificationSettingsPanel: React.FC = () => {
                         type="button"
                         onClick={() => void previewMelody(m.id)}
                         aria-label={`Ouvir melodia ${m.label}`}
-                        className="px-3 py-1.5 rounded-lg border border-[#D4D4D4] bg-white hover:bg-[#F4F4F4] font-semibold text-[#0A0A0A] inline-flex items-center gap-1.5 shrink-0 whitespace-nowrap transition-colors"
+                        className="min-h-[44px] sm:min-h-[34px] px-3 py-1.5 rounded-lg border border-[#D4D4D4] bg-white hover:bg-[#F4F4F4] font-semibold text-[#0A0A0A] inline-flex items-center justify-center gap-1.5 shrink-0 whitespace-nowrap transition-colors"
                       >
                         <Play className="w-3 h-3 text-[#FF8A00]" />
                         <span>Ouvir</span>
@@ -285,7 +286,7 @@ export const NotificationSettingsPanel: React.FC = () => {
       {/* Instalação da Aplicação PWA & Atualizações */}
       <section
         aria-labelledby="pwa-settings-heading"
-        className="lg:col-span-5 bg-white border border-[#E5E5E5] rounded-xl p-6 space-y-4"
+        className="lg:col-span-5 bg-white border border-[#E5E5E5] rounded-xl p-4 sm:p-6 space-y-4 min-w-0"
       >
         <div className="flex items-start justify-between gap-3 pb-3 border-b border-[#E5E5E5]">
           <div>
@@ -319,7 +320,7 @@ export const NotificationSettingsPanel: React.FC = () => {
             <button
               type="button"
               onClick={() => void handleInstallClick()}
-              className="btn-bercali-primary w-full px-4 py-2.5 rounded-[10px] inline-flex items-center justify-center gap-2 whitespace-nowrap"
+              className="btn-bercali-primary min-h-[44px] w-full px-4 py-2.5 rounded-[10px] inline-flex items-center justify-center gap-2 whitespace-nowrap"
             >
               <Download className="w-4 h-4" />
               <span>Instalar app</span>
@@ -334,7 +335,7 @@ export const NotificationSettingsPanel: React.FC = () => {
         )}
 
         {updateAvailable && (
-          <div className="p-3.5 rounded-[10px] bg-[#0A0A0A] text-white flex items-center justify-between gap-3">
+          <div className="p-3.5 rounded-[10px] bg-[#0A0A0A] text-white flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <p className="font-semibold text-[#FFC400]">Nova versão disponível</p>
               <p className="text-[11px] text-[#D4D4D4]">
@@ -344,7 +345,7 @@ export const NotificationSettingsPanel: React.FC = () => {
             <button
               type="button"
               onClick={() => void applyUpdate()}
-              className="btn-bercali-primary px-3.5 py-2 rounded-lg inline-flex items-center gap-1.5 shrink-0 whitespace-nowrap"
+              className="btn-bercali-primary min-h-[44px] sm:min-h-[38px] px-3.5 py-2 rounded-lg inline-flex items-center justify-center gap-1.5 shrink-0 whitespace-nowrap"
             >
               <RefreshCw className="w-3.5 h-3.5" />
               <span>Atualizar</span>

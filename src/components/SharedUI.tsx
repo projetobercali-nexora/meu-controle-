@@ -176,11 +176,11 @@ export const PeriodFilterBar: React.FC<{
   ];
 
   return (
-    <div className="flex flex-wrap items-center gap-2 max-w-full min-w-0">
+    <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-2 w-full sm:w-auto max-w-full min-w-0">
       <div
         role="group"
         aria-label="Filtro de período"
-        className="inline-flex flex-wrap items-center gap-1 p-1 bg-white border border-[#E5E5E5] rounded-[10px] max-w-full"
+        className="flex flex-wrap items-center gap-1 p-1 bg-white border border-[#E5E5E5] rounded-[10px] max-w-full"
       >
         {presets.map((p) => {
           const active = value.preset === p.id;
@@ -196,7 +196,7 @@ export const PeriodFilterBar: React.FC<{
                   endDate: value.endDate || todayIso,
                 })
               }
-              className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors whitespace-nowrap shrink-0 ${
+              className={`min-h-[44px] sm:min-h-[34px] px-3 py-1.5 text-xs font-medium rounded-lg transition-colors whitespace-nowrap shrink-0 ${
                 active
                   ? 'bg-[#0A0A0A] text-white'
                   : 'text-[#525252] hover:text-[#0A0A0A] hover:bg-[#F4F4F4]'
@@ -209,23 +209,23 @@ export const PeriodFilterBar: React.FC<{
       </div>
 
       {value.preset === 'custom' && (
-        <div className="flex flex-wrap items-center gap-2 bg-white border border-[#E5E5E5] rounded-[10px] px-3 py-1.5">
-          <label className="flex items-center gap-1.5 text-xs text-[#525252]">
-            <span>De</span>
+        <div className="grid grid-cols-1 sm:flex sm:flex-wrap items-center gap-2 bg-white border border-[#E5E5E5] rounded-[10px] p-2.5 sm:px-3 sm:py-1.5">
+          <label className="flex items-center justify-between sm:justify-start gap-2 text-xs text-[#525252]">
+            <span className="shrink-0">De</span>
             <input
               type="date"
               value={value.startDate || thirtyDaysAgoIso}
               onChange={(e) => onChange({ ...value, startDate: e.target.value })}
-              className="text-xs text-[#0A0A0A] border border-[#D4D4D4] rounded px-2 py-1 tabular-data"
+              className="min-h-[44px] sm:min-h-[32px] text-xs text-[#0A0A0A] border border-[#D4D4D4] rounded-lg px-2.5 py-1 tabular-data bg-white"
             />
           </label>
-          <label className="flex items-center gap-1.5 text-xs text-[#525252]">
-            <span>Até</span>
+          <label className="flex items-center justify-between sm:justify-start gap-2 text-xs text-[#525252]">
+            <span className="shrink-0">Até</span>
             <input
               type="date"
               value={value.endDate || todayIso}
               onChange={(e) => onChange({ ...value, endDate: e.target.value })}
-              className="text-xs text-[#0A0A0A] border border-[#D4D4D4] rounded px-2 py-1 tabular-data"
+              className="min-h-[44px] sm:min-h-[32px] text-xs text-[#0A0A0A] border border-[#D4D4D4] rounded-lg px-2.5 py-1 tabular-data bg-white"
             />
           </label>
         </div>
@@ -240,11 +240,11 @@ export const AccessDeniedState: React.FC<{ moduleTitle: string; requiredNote?: s
 }) => {
   const { session, setActiveModule } = useAdmin();
   return (
-    <div className="bg-white border border-[#E5E5E5] rounded-xl p-8 max-w-xl mx-auto my-8 text-center">
+    <div className="bg-white border border-[#E5E5E5] rounded-xl p-6 sm:p-8 max-w-xl mx-auto my-6 sm:my-8 text-center">
       <div className="w-12 h-12 rounded-[10px] bg-[#0A0A0A] text-[#FF8A00] flex items-center justify-center mx-auto mb-4">
         <Lock className="w-5 h-5" />
       </div>
-      <h2 className="font-brand font-bold text-xl text-[#0A0A0A] mb-2">
+      <h2 className="font-brand font-bold text-xl text-[#0A0A0A] mb-2 break-words">
         Acesso restrito a {moduleTitle}
       </h2>
       <p className="text-sm text-[#525252] leading-relaxed mb-5">
@@ -257,7 +257,7 @@ export const AccessDeniedState: React.FC<{ moduleTitle: string; requiredNote?: s
         <button
           type="button"
           onClick={() => setActiveModule('dashboard')}
-          className="btn-bercali-primary px-4 py-2 text-xs rounded-[10px] whitespace-nowrap"
+          className="btn-bercali-primary min-h-[44px] sm:min-h-[38px] px-4 py-2 text-xs rounded-[10px] whitespace-nowrap inline-flex items-center justify-center"
         >
           Voltar ao Dashboard
         </button>
@@ -273,18 +273,18 @@ export const EmptyDataState: React.FC<{
   onAction?: () => void;
 }> = ({ title, description, actionLabel, onAction }) => {
   return (
-    <div className="bg-white border border-[#E5E5E5] rounded-xl p-10 text-center">
+    <div className="bg-white border border-[#E5E5E5] rounded-xl p-6 sm:p-10 text-center">
       <div className="w-11 h-11 rounded-[10px] bg-[#F4F4F4] text-[#0A0A0A] flex items-center justify-center mx-auto mb-3">
         <ShieldAlert className="w-5 h-5 text-[#FF8A00]" />
       </div>
-      <h3 className="font-brand font-bold text-base text-[#0A0A0A] mb-1.5">{title}</h3>
+      <h3 className="font-brand font-bold text-base text-[#0A0A0A] mb-1.5 break-words">{title}</h3>
       <p className="text-sm text-[#525252] max-w-md mx-auto leading-relaxed mb-5">{description}</p>
       {actionLabel && onAction && (
         <div className="flex flex-wrap items-center justify-center gap-3">
           <button
             type="button"
             onClick={onAction}
-            className="btn-bercali-primary px-4 py-2 text-xs rounded-[10px] whitespace-nowrap"
+            className="btn-bercali-primary min-h-[44px] sm:min-h-[38px] px-4 py-2 text-xs rounded-[10px] whitespace-nowrap inline-flex items-center justify-center"
           >
             {actionLabel}
           </button>
@@ -316,22 +316,30 @@ export const ConfirmDialog: React.FC<{
   if (!open) return null;
   return (
     <div
-      className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4"
+      className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4 pt-safe pb-safe"
+      onClick={() => {
+        if (!isBusy) onCancel();
+      }}
       role="dialog"
       aria-modal="true"
       aria-labelledby="confirm-dialog-title"
     >
-      <div className="bg-white rounded-xl border border-[#E5E5E5] max-w-md w-full p-6">
-        <h3 id="confirm-dialog-title" className="font-brand font-bold text-lg text-[#0A0A0A] mb-2">
-          {title}
-        </h3>
-        <p className="text-sm text-[#525252] leading-relaxed mb-6">{description}</p>
-        <div className="flex items-center justify-end gap-3">
+      <div
+        className="bg-white rounded-xl border border-[#E5E5E5] max-w-md w-full max-h-[90dvh] flex flex-col overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="p-5 sm:p-6 overflow-y-auto flex-1 min-h-0">
+          <h3 id="confirm-dialog-title" className="font-brand font-bold text-lg text-[#0A0A0A] mb-2 break-words">
+            {title}
+          </h3>
+          <p className="text-sm text-[#525252] leading-relaxed break-words">{description}</p>
+        </div>
+        <div className="px-5 sm:px-6 py-3.5 border-t border-[#E5E5E5] bg-[#FAFAFA] shrink-0 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2.5 sm:gap-3">
           <button
             type="button"
             disabled={isBusy}
             onClick={onCancel}
-            className="px-4 py-2 text-xs font-medium border border-[#D4D4D4] text-[#0A0A0A] rounded-[10px] hover:bg-[#F4F4F4] whitespace-nowrap disabled:opacity-50"
+            className="min-h-[44px] sm:min-h-[38px] px-4 py-2 text-xs font-medium border border-[#D4D4D4] bg-white text-[#0A0A0A] rounded-[10px] hover:bg-[#F4F4F4] whitespace-nowrap disabled:opacity-50"
           >
             Cancelar
           </button>
@@ -339,7 +347,7 @@ export const ConfirmDialog: React.FC<{
             type="button"
             disabled={isBusy}
             onClick={onConfirm}
-            className={`px-4 py-2 text-xs font-bold rounded-[10px] whitespace-nowrap disabled:opacity-50 ${
+            className={`min-h-[44px] sm:min-h-[38px] px-4 py-2 text-xs font-bold rounded-[10px] whitespace-nowrap disabled:opacity-50 ${
               destructive
                 ? 'bg-[#EF4444] text-white hover:opacity-90'
                 : 'btn-bercali-primary'

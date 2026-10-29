@@ -324,7 +324,7 @@ export const ProductsPage: React.FC = () => {
                 ? 'Cria primeiro uma categoria em Categorias'
                 : undefined
             }
-            className="btn-bercali-primary px-4 py-2.5 rounded-[10px] text-xs inline-flex items-center gap-2 whitespace-nowrap shrink-0 disabled:opacity-50"
+            className="btn-bercali-primary min-h-[44px] sm:min-h-0 px-4 py-2.5 rounded-[10px] text-xs inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0 w-full sm:w-auto disabled:opacity-50"
           >
             <Plus className="w-4 h-4" />
             <span>Novo Produto</span>
@@ -335,7 +335,7 @@ export const ProductsPage: React.FC = () => {
       {/* Filters Toolbar */}
       <div className="bg-white border border-[#E5E5E5] rounded-xl p-4 flex flex-col lg:flex-row lg:items-center justify-between gap-3">
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 flex-1">
-          <div className="relative flex-1 max-w-sm">
+          <div className="relative flex-1 sm:max-w-sm">
             <Search className="w-4 h-4 text-[#737373] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               type="search"
@@ -346,7 +346,7 @@ export const ProductsPage: React.FC = () => {
               }}
               aria-label="Pesquisar produtos por nome ou SKU"
               placeholder="Pesquisar por nome ou SKU..."
-              className="w-full pl-9 pr-3 py-2 text-xs bg-[#F4F4F4] border border-transparent focus:bg-white focus:border-[#FF8A00] focus:outline-none rounded-[10px]"
+              className="w-full min-h-[44px] sm:min-h-0 pl-9 pr-3 py-2 text-xs bg-[#F4F4F4] border border-transparent focus:bg-white focus:border-[#FF8A00] focus:outline-none rounded-[10px]"
             />
           </div>
 
@@ -357,7 +357,7 @@ export const ProductsPage: React.FC = () => {
               setCategoryFilter(e.target.value);
               setPage(1);
             }}
-            className="px-3 py-2 text-xs bg-white border border-[#D4D4D4] rounded-[10px] text-[#0A0A0A]"
+            className="min-h-[44px] sm:min-h-0 px-3 py-2 text-xs bg-white border border-[#D4D4D4] rounded-[10px] text-[#0A0A0A]"
           >
             <option value="all">Todas as categorias</option>
             {snapshot.categories.map((c) => (
@@ -371,7 +371,7 @@ export const ProductsPage: React.FC = () => {
         <div
           role="group"
           aria-label="Filtrar por estado do produto"
-          className="inline-flex flex-wrap items-center gap-1 p-1 bg-[#F4F4F4] rounded-[10px]"
+          className="flex flex-wrap items-center gap-1 p-1 bg-[#F4F4F4] rounded-[10px]"
         >
           {(
             [
@@ -391,7 +391,7 @@ export const ProductsPage: React.FC = () => {
                   setStatusFilter(tab.id);
                   setPage(1);
                 }}
-                className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors whitespace-nowrap ${
+                className={`min-h-[40px] sm:min-h-0 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors inline-flex items-center justify-center whitespace-nowrap ${
                   active
                     ? 'bg-white text-[#0A0A0A] shadow-xs'
                     : 'text-[#525252] hover:text-[#0A0A0A]'
@@ -437,7 +437,148 @@ export const ProductsPage: React.FC = () => {
         />
       ) : (
         <div className="bg-white border border-[#E5E5E5] rounded-xl overflow-hidden">
-          <div className="overflow-x-auto">
+          {/* Mobile Stacked Cards (< md) */}
+          <div className="md:hidden divide-y divide-[#E5E5E5] text-xs">
+            {paginated.map((p) => {
+              const isLowStock =
+                p.trackStock &&
+                p.stockQuantity !== null &&
+                p.stockQuantity <= p.lowStockThreshold;
+              const primaryImg = p.media.find((m) => m.type === 'image')?.url || null;
+              return (
+                <div key={p.id} className="p-4 space-y-3">
+                  <div className="flex items-start gap-3">
+                    <ProductVisualThumb
+                      preset={p.visualPreset}
+                      name={p.name}
+                      imageUrl={primaryImg}
+                    />
+                    <div className="min-w-0 flex-1">
+                      <p className="font-semibold text-[#0A0A0A] break-words leading-snug">
+                        {p.name}
+                      </p>
+                      <p className="text-[11px] text-[#525252] font-mono break-words mt-0.5">
+                        {p.sku} · {categoryMap.get(p.categoryId) || 'Sem categoria'}
+                      </p>
+                      <p className="text-[11px] text-[#737373] mt-0.5">
+                        {p.media.length} media
+                        {p.isFeatured && ' · Destaque'}
+                        {Boolean(p.sortOrder) && ` · Ordem #${p.sortOrder}`}
+                        {!p.isAvailable && ' · Indisponível'}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap items-center justify-between gap-2 pt-2.5 border-t border-[#F4F4F4]">
+                    <div>
+                      {p.promoPriceKz !== null ? (
+                        <div className="flex items-baseline gap-2">
+                          <span className="metric-num font-bold text-sm text-[#0A0A0A]">
+                            {formatKwanza(p.promoPriceKz)}
+                          </span>
+                          <span className="text-[11px] text-[#737373] line-through tabular-data">
+                            {formatKwanza(p.priceKz)}
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="metric-num font-bold text-sm text-[#0A0A0A]">
+                          {formatKwanza(p.priceKz)}
+                        </span>
+                      )}
+                      <p className="text-[11px] text-[#737373] tabular-data mt-0.5">
+                        Stock:{' '}
+                        {p.trackStock ? (
+                          <span
+                            className={`font-mono font-semibold ${
+                              isLowStock ? 'text-[#B91C1C]' : 'text-[#0A0A0A]'
+                            }`}
+                          >
+                            {p.stockQuantity} un.
+                          </span>
+                        ) : (
+                          <span>Livre</span>
+                        )}{' '}
+                        · {formatDatePt(p.updatedAt)}
+                      </p>
+                    </div>
+                    <ProductStatusInline status={p.status} />
+                  </div>
+
+                  {canWrite ? (
+                    <div className="flex flex-wrap items-center justify-end gap-2 pt-1">
+                      <button
+                        type="button"
+                        disabled={isMutating}
+                        onClick={() => openEditModal(p)}
+                        aria-label={`Editar ${p.name}`}
+                        className="min-h-[44px] px-3 rounded-lg border border-[#E5E5E5] text-[#0A0A0A] hover:bg-[#F4F4F4] inline-flex items-center gap-1.5 font-medium disabled:opacity-40"
+                      >
+                        <Edit3 className="w-4 h-4" />
+                        <span>Editar</span>
+                      </button>
+                      {p.status !== 'archived' ? (
+                        <>
+                          <button
+                            type="button"
+                            disabled={isMutating}
+                            onClick={() =>
+                              void handleStatusChange(
+                                p.id,
+                                p.status === 'active' ? 'inactive' : 'active'
+                              )
+                            }
+                            aria-label={
+                              p.status === 'active'
+                                ? `Desativar ${p.name}`
+                                : `Ativar ${p.name}`
+                            }
+                            title={p.status === 'active' ? 'Desativar' : 'Ativar'}
+                            className="min-h-[44px] min-w-[44px] rounded-lg border border-[#E5E5E5] text-[#0A0A0A] hover:bg-[#F4F4F4] inline-flex items-center justify-center disabled:opacity-40"
+                          >
+                            <Power className="w-4 h-4" />
+                          </button>
+                          <button
+                            type="button"
+                            disabled={isMutating}
+                            onClick={() => setArchiveTarget(p)}
+                            aria-label={`Arquivar ${p.name}`}
+                            title="Arquivar preservando histórico"
+                            className="min-h-[44px] min-w-[44px] rounded-lg border border-[#E5E5E5] text-[#525252] hover:text-[#B91C1C] hover:bg-[#FEF2F2] inline-flex items-center justify-center disabled:opacity-40"
+                          >
+                            <Archive className="w-4 h-4" />
+                          </button>
+                        </>
+                      ) : (
+                        <button
+                          type="button"
+                          disabled={isMutating}
+                          onClick={() => void handleStatusChange(p.id, 'inactive')}
+                          className="min-h-[44px] px-3 text-xs font-medium border border-[#D4D4D4] rounded-lg hover:bg-[#F4F4F4] inline-flex items-center justify-center disabled:opacity-40"
+                        >
+                          Restaurar
+                        </button>
+                      )}
+                      <button
+                        type="button"
+                        disabled={isMutating}
+                        onClick={() => setDeleteTarget(p)}
+                        aria-label={`Eliminar ${p.name}`}
+                        title="Eliminar produto (apenas se não tiver encomendas associadas)"
+                        className="min-h-[44px] min-w-[44px] rounded-lg border border-[#E5E5E5] text-[#525252] hover:text-[#B91C1C] hover:bg-[#FEF2F2] inline-flex items-center justify-center disabled:opacity-40"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ) : (
+                    <p className="text-[11px] text-[#737373] text-right">Só leitura</p>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Desktop Table (md+) */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="border-b border-[#E5E5E5] bg-[#FAFAFA] text-[11px] font-semibold text-[#525252]">
@@ -596,18 +737,18 @@ export const ProductsPage: React.FC = () => {
           </div>
 
           {/* Pagination */}
-          <div className="px-4 py-3 border-t border-[#E5E5E5] flex items-center justify-between text-xs text-[#525252]">
+          <div className="px-4 py-3 border-t border-[#E5E5E5] flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs text-[#525252]">
             <span className="tabular-data">
               A mostrar {(safePage - 1) * PAGE_SIZE + 1}–
               {Math.min(safePage * PAGE_SIZE, filteredProducts.length)} de {filteredProducts.length}{' '}
               produto(s)
             </span>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center justify-between sm:justify-end gap-2">
               <button
                 type="button"
                 disabled={safePage <= 1}
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
-                className="px-3 py-1.5 rounded-lg border border-[#D4D4D4] disabled:opacity-40 text-[#0A0A0A] hover:bg-[#F4F4F4]"
+                className="min-h-[44px] sm:min-h-0 px-3 py-1.5 rounded-lg border border-[#D4D4D4] disabled:opacity-40 text-[#0A0A0A] hover:bg-[#F4F4F4]"
               >
                 Anterior
               </button>
@@ -618,7 +759,7 @@ export const ProductsPage: React.FC = () => {
                 type="button"
                 disabled={safePage >= totalPages}
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                className="px-3 py-1.5 rounded-lg border border-[#D4D4D4] disabled:opacity-40 text-[#0A0A0A] hover:bg-[#F4F4F4]"
+                className="min-h-[44px] sm:min-h-0 px-3 py-1.5 rounded-lg border border-[#D4D4D4] disabled:opacity-40 text-[#0A0A0A] hover:bg-[#F4F4F4]"
               >
                 Seguinte
               </button>
@@ -630,15 +771,20 @@ export const ProductsPage: React.FC = () => {
       {/* Create / Edit Product Modal */}
       {modalOpen && (
         <div
-          className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4 overflow-y-auto"
+          className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-3 sm:p-4 pt-safe pb-safe"
           role="dialog"
           aria-modal="true"
           aria-labelledby="product-modal-title"
+          onClick={(e) => {
+            if (e.target === e.currentTarget && !isSubmitting && !isUploadingMedia) {
+              setModalOpen(false);
+            }
+          }}
         >
-          <div className="bg-white rounded-xl border border-[#E5E5E5] max-w-2xl w-full p-6 my-8 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between pb-4 mb-5 border-b border-[#E5E5E5]">
-              <div>
-                <h2 id="product-modal-title" className="font-brand font-bold text-lg text-[#0A0A0A]">
+          <div className="bg-white rounded-xl border border-[#E5E5E5] max-w-2xl w-full max-h-[90dvh] flex flex-col overflow-hidden">
+            <div className="shrink-0 flex items-center justify-between gap-3 px-4 sm:px-6 py-4 border-b border-[#E5E5E5]">
+              <div className="min-w-0">
+                <h2 id="product-modal-title" className="font-brand font-bold text-base sm:text-lg text-[#0A0A0A]">
                   {form.id ? 'Editar Produto' : 'Criar Novo Produto'}
                 </h2>
                 <p className="text-xs text-[#525252]">
@@ -650,355 +796,361 @@ export const ProductsPage: React.FC = () => {
                 disabled={isSubmitting}
                 onClick={() => setModalOpen(false)}
                 aria-label="Fechar janela de produto"
-                className="p-1.5 rounded-lg hover:bg-[#F4F4F4]"
+                className="min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 p-2 rounded-lg hover:bg-[#F4F4F4] inline-flex items-center justify-center shrink-0"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            <form onSubmit={(e) => void handleFormSubmit(e)} noValidate className="space-y-4 text-xs">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <form
+              onSubmit={(e) => void handleFormSubmit(e)}
+              noValidate
+              className="flex flex-col flex-1 min-h-0 text-xs"
+            >
+              <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-4 sm:p-6 space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="prod-name" className="block font-medium text-[#0A0A0A] mb-1">
+                      Nome do produto *
+                    </label>
+                    <input
+                      id="prod-name"
+                      type="text"
+                      value={form.name}
+                      onChange={(e) => setForm({ ...form, name: e.target.value })}
+                      placeholder="Ex.: Auscultadores Bluetooth Pro"
+                      className="w-full min-h-[44px] sm:min-h-0 px-3 py-2 border border-[#D4D4D4] rounded-[10px] focus:border-[#FF8A00] focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="prod-sku" className="block font-medium text-[#0A0A0A] mb-1">
+                      Código / SKU *
+                    </label>
+                    <input
+                      id="prod-sku"
+                      type="text"
+                      value={form.sku}
+                      onChange={(e) => setForm({ ...form, sku: e.target.value })}
+                      placeholder="Ex.: BRC-AUD-210"
+                      className="w-full min-h-[44px] sm:min-h-0 px-3 py-2 font-mono border border-[#D4D4D4] rounded-[10px] focus:border-[#FF8A00] focus:outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div>
+                    <label htmlFor="prod-cat" className="block font-medium text-[#0A0A0A] mb-1">
+                      Categoria *
+                    </label>
+                    <select
+                      id="prod-cat"
+                      value={form.categoryId}
+                      onChange={(e) => setForm({ ...form, categoryId: e.target.value })}
+                      className="w-full min-h-[44px] sm:min-h-0 px-3 py-2 border border-[#D4D4D4] rounded-[10px] bg-white"
+                    >
+                      {snapshot.categories.map((c) => (
+                        <option key={c.id} value={c.id}>
+                          {c.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label htmlFor="prod-price" className="block font-medium text-[#0A0A0A] mb-1">
+                      Preço base (Kz) *
+                    </label>
+                    <input
+                      id="prod-price"
+                      type="number"
+                      min="1"
+                      value={form.priceKz}
+                      onChange={(e) => setForm({ ...form, priceKz: e.target.value })}
+                      placeholder="Ex.: 28500"
+                      className="w-full min-h-[44px] sm:min-h-0 px-3 py-2 border border-[#D4D4D4] rounded-[10px] tabular-data focus:border-[#FF8A00] focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="prod-promo" className="block font-medium text-[#0A0A0A] mb-1">
+                      Preço promocional (Kz, opcional)
+                    </label>
+                    <input
+                      id="prod-promo"
+                      type="number"
+                      min="1"
+                      value={form.promoPriceKz}
+                      onChange={(e) => setForm({ ...form, promoPriceKz: e.target.value })}
+                      placeholder="Opcional (< preço base)"
+                      className="w-full min-h-[44px] sm:min-h-0 px-3 py-2 border border-[#D4D4D4] rounded-[10px] tabular-data focus:border-[#FF8A00] focus:outline-none"
+                    />
+                  </div>
+                </div>
+
                 <div>
-                  <label htmlFor="prod-name" className="block font-medium text-[#0A0A0A] mb-1">
-                    Nome do produto *
+                  <label htmlFor="prod-desc" className="block font-medium text-[#0A0A0A] mb-1">
+                    Descrição comercial
                   </label>
-                  <input
-                    id="prod-name"
-                    type="text"
-                    value={form.name}
-                    onChange={(e) => setForm({ ...form, name: e.target.value })}
-                    placeholder="Ex.: Auscultadores Bluetooth Pro"
+                  <textarea
+                    id="prod-desc"
+                    rows={3}
+                    value={form.description}
+                    onChange={(e) => setForm({ ...form, description: e.target.value })}
+                    placeholder="Características principais, garantia e conteúdo da embalagem..."
                     className="w-full px-3 py-2 border border-[#D4D4D4] rounded-[10px] focus:border-[#FF8A00] focus:outline-none"
                   />
                 </div>
-                <div>
-                  <label htmlFor="prod-sku" className="block font-medium text-[#0A0A0A] mb-1">
-                    Código / SKU *
-                  </label>
-                  <input
-                    id="prod-sku"
-                    type="text"
-                    value={form.sku}
-                    onChange={(e) => setForm({ ...form, sku: e.target.value })}
-                    placeholder="Ex.: BRC-AUD-210"
-                    className="w-full px-3 py-2 font-mono border border-[#D4D4D4] rounded-[10px] focus:border-[#FF8A00] focus:outline-none"
-                  />
-                </div>
-              </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div>
-                  <label htmlFor="prod-cat" className="block font-medium text-[#0A0A0A] mb-1">
-                    Categoria *
-                  </label>
-                  <select
-                    id="prod-cat"
-                    value={form.categoryId}
-                    onChange={(e) => setForm({ ...form, categoryId: e.target.value })}
-                    className="w-full px-3 py-2 border border-[#D4D4D4] rounded-[10px] bg-white"
-                  >
-                    {snapshot.categories.map((c) => (
-                      <option key={c.id} value={c.id}>
-                        {c.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label htmlFor="prod-price" className="block font-medium text-[#0A0A0A] mb-1">
-                    Preço base (Kz) *
-                  </label>
-                  <input
-                    id="prod-price"
-                    type="number"
-                    min="1"
-                    value={form.priceKz}
-                    onChange={(e) => setForm({ ...form, priceKz: e.target.value })}
-                    placeholder="Ex.: 28500"
-                    className="w-full px-3 py-2 border border-[#D4D4D4] rounded-[10px] tabular-data focus:border-[#FF8A00] focus:outline-none"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="prod-promo" className="block font-medium text-[#0A0A0A] mb-1">
-                    Preço promocional (Kz, opcional)
-                  </label>
-                  <input
-                    id="prod-promo"
-                    type="number"
-                    min="1"
-                    value={form.promoPriceKz}
-                    onChange={(e) => setForm({ ...form, promoPriceKz: e.target.value })}
-                    placeholder="Opcional (< preço base)"
-                    className="w-full px-3 py-2 border border-[#D4D4D4] rounded-[10px] tabular-data focus:border-[#FF8A00] focus:outline-none"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label htmlFor="prod-desc" className="block font-medium text-[#0A0A0A] mb-1">
-                  Descrição comercial
-                </label>
-                <textarea
-                  id="prod-desc"
-                  rows={3}
-                  value={form.description}
-                  onChange={(e) => setForm({ ...form, description: e.target.value })}
-                  placeholder="Características principais, garantia e conteúdo da embalagem..."
-                  className="w-full px-3 py-2 border border-[#D4D4D4] rounded-[10px] focus:border-[#FF8A00] focus:outline-none"
-                />
-              </div>
-
-              {/* Stock, Storefront Highlight & Publication Status */}
-              <div className="p-4 rounded-[10px] bg-[#F4F4F4] space-y-3">
-                <div className="flex flex-wrap items-center justify-between gap-4">
-                  <label className="inline-flex items-center gap-2 font-medium text-[#0A0A0A]">
-                    <input
-                      type="checkbox"
-                      checked={form.trackStock}
-                      onChange={(e) => setForm({ ...form, trackStock: e.target.checked })}
-                      className="rounded border-[#D4D4D4]"
-                    />
-                    <span>Ativar gestão de stock por unidades</span>
-                  </label>
-
-                  <label className="inline-flex items-center gap-2 font-medium text-[#0A0A0A]">
-                    <input
-                      type="checkbox"
-                      checked={form.isAvailable}
-                      onChange={(e) => setForm({ ...form, isAvailable: e.target.checked })}
-                      className="rounded border-[#D4D4D4]"
-                    />
-                    <span>Disponível para encomenda</span>
-                  </label>
-
-                  <label className="inline-flex items-center gap-2 font-medium text-[#0A0A0A]">
-                    <input
-                      type="checkbox"
-                      checked={form.isFeatured}
-                      onChange={(e) => setForm({ ...form, isFeatured: e.target.checked })}
-                      className="rounded border-[#D4D4D4]"
-                    />
-                    <span>Destacar na montra da loja</span>
-                  </label>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-5 gap-3">
-                  {form.trackStock && (
-                    <>
-                      <div>
-                        <label htmlFor="prod-stock" className="block text-[#525252] mb-1">
-                          Stock atual
-                        </label>
-                        <input
-                          id="prod-stock"
-                          type="number"
-                          min="0"
-                          value={form.stockQuantity}
-                          onChange={(e) => setForm({ ...form, stockQuantity: e.target.value })}
-                          className="w-full px-3 py-1.5 bg-white border border-[#D4D4D4] rounded-lg tabular-data"
-                        />
-                      </div>
-                      <div>
-                        <label htmlFor="prod-low" className="block text-[#525252] mb-1">
-                          Alerta stock mín.
-                        </label>
-                        <input
-                          id="prod-low"
-                          type="number"
-                          min="0"
-                          value={form.lowStockThreshold}
-                          onChange={(e) => setForm({ ...form, lowStockThreshold: e.target.value })}
-                          className="w-full px-3 py-1.5 bg-white border border-[#D4D4D4] rounded-lg tabular-data"
-                        />
-                      </div>
-                    </>
-                  )}
-                  <div>
-                    <label htmlFor="prod-order" className="block text-[#525252] mb-1">
-                      Ordem na loja
+                {/* Stock, Storefront Highlight & Publication Status */}
+                <div className="p-3.5 sm:p-4 rounded-[10px] bg-[#F4F4F4] space-y-3">
+                  <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center justify-between gap-2.5 sm:gap-4">
+                    <label className="min-h-[36px] inline-flex items-center gap-2 font-medium text-[#0A0A0A] cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={form.trackStock}
+                        onChange={(e) => setForm({ ...form, trackStock: e.target.checked })}
+                        className="rounded border-[#D4D4D4]"
+                      />
+                      <span>Ativar gestão de stock por unidades</span>
                     </label>
-                    <input
-                      id="prod-order"
-                      type="number"
-                      min="0"
-                      value={form.sortOrder}
-                      onChange={(e) => setForm({ ...form, sortOrder: e.target.value })}
-                      className="w-full px-3 py-1.5 bg-white border border-[#D4D4D4] rounded-lg tabular-data"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="prod-status" className="block text-[#525252] mb-1">
-                      Estado de publicação
-                    </label>
-                    <select
-                      id="prod-status"
-                      value={form.status}
-                      onChange={(e) => setForm({ ...form, status: e.target.value as ProductStatus })}
-                      className="w-full px-3 py-1.5 bg-white border border-[#D4D4D4] rounded-lg"
-                    >
-                      <option value="active">Ativo (Publicado na loja)</option>
-                      <option value="inactive">Inativo (Oculto na loja)</option>
-                      <option value="archived">Arquivado (Oculto)</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label htmlFor="prod-preset" className="block text-[#525252] mb-1">
-                      Ícone reserva
-                    </label>
-                    <select
-                      id="prod-preset"
-                      value={form.visualPreset}
-                      onChange={(e) =>
-                        setForm({
-                          ...form,
-                          visualPreset: e.target.value as Product['visualPreset'],
-                        })
-                      }
-                      className="w-full px-3 py-1.5 bg-white border border-[#D4D4D4] rounded-lg"
-                    >
-                      <option value="tech">Tecnologia</option>
-                      <option value="audio">Áudio</option>
-                      <option value="watch">Relógio / Wearable</option>
-                      <option value="bag">Mochila / Moda</option>
-                      <option value="accessory">Acessório</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
 
-              {/* Imagens e Vídeos (Supabase Storage + URL) */}
-              <div className="border border-[#E5E5E5] rounded-[10px] p-4 space-y-3">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                  <div>
-                    <p className="font-semibold text-[#0A0A0A]">
-                      Imagens e Vídeos (<span className="font-mono">product_media</span>)
-                    </p>
-                    <p className="text-[11px] text-[#525252]">
-                      Envia ficheiros diretamente para o bucket <strong>product-media</strong> (máx. 15 MB) ou associa um URL externo HTTPS.
-                    </p>
-                  </div>
+                    <label className="min-h-[36px] inline-flex items-center gap-2 font-medium text-[#0A0A0A] cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={form.isAvailable}
+                        onChange={(e) => setForm({ ...form, isAvailable: e.target.checked })}
+                        className="rounded border-[#D4D4D4]"
+                      />
+                      <span>Disponível para encomenda</span>
+                    </label>
 
-                  <div>
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm"
-                      multiple
-                      onChange={(e) => void handleFileUpload(e)}
-                      className="hidden"
-                      id="product-storage-upload"
-                    />
-                    <label
-                      htmlFor="product-storage-upload"
-                      className={`px-3 py-2 rounded-lg bg-[#0A0A0A] text-white font-semibold inline-flex items-center gap-1.5 cursor-pointer whitespace-nowrap hover:opacity-90 ${
-                        isUploadingMedia ? 'opacity-60 pointer-events-none' : ''
-                      }`}
-                    >
-                      {isUploadingMedia ? (
-                        <Loader2 className="w-3.5 h-3.5 text-[#FF8A00] animate-spin" />
-                      ) : (
-                        <Upload className="w-3.5 h-3.5 text-[#FF8A00]" />
-                      )}
-                      <span>{isUploadingMedia ? 'A enviar...' : 'Carregar ficheiro (Storage)'}</span>
+                    <label className="min-h-[36px] inline-flex items-center gap-2 font-medium text-[#0A0A0A] cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={form.isFeatured}
+                        onChange={(e) => setForm({ ...form, isFeatured: e.target.checked })}
+                        className="rounded border-[#D4D4D4]"
+                      />
+                      <span>Destacar na montra da loja</span>
                     </label>
                   </div>
-                </div>
 
-                <div className="flex flex-col sm:flex-row gap-2">
-                  <select
-                    aria-label="Tipo de media"
-                    value={newMediaType}
-                    onChange={(e) => setNewMediaType(e.target.value as 'image' | 'video')}
-                    className="px-3 py-2 border border-[#D4D4D4] rounded-lg bg-white"
-                  >
-                    <option value="image">Imagem (URL)</option>
-                    <option value="video">Vídeo (URL)</option>
-                  </select>
-                  <input
-                    type="url"
-                    value={newMediaUrl}
-                    onChange={(e) => setNewMediaUrl(e.target.value)}
-                    placeholder="https://... (opcional se usares upload direto)"
-                    className="flex-1 px-3 py-2 border border-[#D4D4D4] rounded-lg"
-                  />
-                  <button
-                    type="button"
-                    onClick={handleAddMediaRef}
-                    className="px-3 py-2 border border-[#0A0A0A] rounded-lg font-medium hover:bg-[#F4F4F4] whitespace-nowrap"
-                  >
-                    Adicionar URL
-                  </button>
-                </div>
-
-                {form.media.length > 0 && (
-                  <div className="space-y-1.5">
-                    {form.media.map((m, idx) => (
-                      <div
-                        key={m.id}
-                        className="flex items-center justify-between gap-2 px-3 py-2 rounded-lg bg-[#F4F4F4]"
+                  <div className="grid grid-cols-1 sm:grid-cols-5 gap-3">
+                    {form.trackStock && (
+                      <>
+                        <div>
+                          <label htmlFor="prod-stock" className="block text-[#525252] mb-1">
+                            Stock atual
+                          </label>
+                          <input
+                            id="prod-stock"
+                            type="number"
+                            min="0"
+                            value={form.stockQuantity}
+                            onChange={(e) => setForm({ ...form, stockQuantity: e.target.value })}
+                            className="w-full min-h-[44px] sm:min-h-0 px-3 py-1.5 bg-white border border-[#D4D4D4] rounded-lg tabular-data"
+                          />
+                        </div>
+                        <div>
+                          <label htmlFor="prod-low" className="block text-[#525252] mb-1">
+                            Alerta stock mín.
+                          </label>
+                          <input
+                            id="prod-low"
+                            type="number"
+                            min="0"
+                            value={form.lowStockThreshold}
+                            onChange={(e) => setForm({ ...form, lowStockThreshold: e.target.value })}
+                            className="w-full min-h-[44px] sm:min-h-0 px-3 py-1.5 bg-white border border-[#D4D4D4] rounded-lg tabular-data"
+                          />
+                        </div>
+                      </>
+                    )}
+                    <div>
+                      <label htmlFor="prod-order" className="block text-[#525252] mb-1">
+                        Ordem na loja
+                      </label>
+                      <input
+                        id="prod-order"
+                        type="number"
+                        min="0"
+                        value={form.sortOrder}
+                        onChange={(e) => setForm({ ...form, sortOrder: e.target.value })}
+                        className="w-full min-h-[44px] sm:min-h-0 px-3 py-1.5 bg-white border border-[#D4D4D4] rounded-lg tabular-data"
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="prod-status" className="block text-[#525252] mb-1">
+                        Estado de publicação
+                      </label>
+                      <select
+                        id="prod-status"
+                        value={form.status}
+                        onChange={(e) => setForm({ ...form, status: e.target.value as ProductStatus })}
+                        className="w-full min-h-[44px] sm:min-h-0 px-3 py-1.5 bg-white border border-[#D4D4D4] rounded-lg"
                       >
-                        <span className="flex items-center gap-2 min-w-0">
-                          {m.type === 'video' ? (
-                            <Film className="w-3.5 h-3.5 text-[#FF8A00] shrink-0" />
-                          ) : (
-                            <ImageIcon className="w-3.5 h-3.5 text-[#FF8A00] shrink-0" />
-                          )}
-                          <span className="font-mono text-[11px] truncate">{m.url}</span>
-                          {idx === 0 && (
-                            <span className="text-[10px] font-semibold text-[#15803D] shrink-0">
-                              · Principal
-                            </span>
-                          )}
-                        </span>
-                        <div className="flex items-center gap-2 shrink-0">
-                          {idx > 0 && (
+                        <option value="active">Ativo (Publicado na loja)</option>
+                        <option value="inactive">Inativo (Oculto na loja)</option>
+                        <option value="archived">Arquivado (Oculto)</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label htmlFor="prod-preset" className="block text-[#525252] mb-1">
+                        Ícone reserva
+                      </label>
+                      <select
+                        id="prod-preset"
+                        value={form.visualPreset}
+                        onChange={(e) =>
+                          setForm({
+                            ...form,
+                            visualPreset: e.target.value as Product['visualPreset'],
+                          })
+                        }
+                        className="w-full min-h-[44px] sm:min-h-0 px-3 py-1.5 bg-white border border-[#D4D4D4] rounded-lg"
+                      >
+                        <option value="tech">Tecnologia</option>
+                        <option value="audio">Áudio</option>
+                        <option value="watch">Relógio / Wearable</option>
+                        <option value="bag">Mochila / Moda</option>
+                        <option value="accessory">Acessório</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Imagens e Vídeos (Supabase Storage + URL) */}
+                <div className="border border-[#E5E5E5] rounded-[10px] p-3.5 sm:p-4 space-y-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                    <div>
+                      <p className="font-semibold text-[#0A0A0A]">
+                        Imagens e Vídeos (<span className="font-mono">product_media</span>)
+                      </p>
+                      <p className="text-[11px] text-[#525252]">
+                        Envia ficheiros diretamente para o bucket <strong>product-media</strong> (máx. 15 MB) ou associa um URL externo HTTPS.
+                      </p>
+                    </div>
+
+                    <div>
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm"
+                        multiple
+                        onChange={(e) => void handleFileUpload(e)}
+                        className="hidden"
+                        id="product-storage-upload"
+                      />
+                      <label
+                        htmlFor="product-storage-upload"
+                        className={`min-h-[44px] sm:min-h-0 px-3 py-2 rounded-lg bg-[#0A0A0A] text-white font-semibold inline-flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap w-full sm:w-auto hover:opacity-90 ${
+                          isUploadingMedia ? 'opacity-60 pointer-events-none' : ''
+                        }`}
+                      >
+                        {isUploadingMedia ? (
+                          <Loader2 className="w-3.5 h-3.5 text-[#FF8A00] animate-spin" />
+                        ) : (
+                          <Upload className="w-3.5 h-3.5 text-[#FF8A00]" />
+                        )}
+                        <span>{isUploadingMedia ? 'A enviar...' : 'Carregar ficheiro (Storage)'}</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <select
+                      aria-label="Tipo de media"
+                      value={newMediaType}
+                      onChange={(e) => setNewMediaType(e.target.value as 'image' | 'video')}
+                      className="min-h-[44px] sm:min-h-0 px-3 py-2 border border-[#D4D4D4] rounded-lg bg-white"
+                    >
+                      <option value="image">Imagem (URL)</option>
+                      <option value="video">Vídeo (URL)</option>
+                    </select>
+                    <input
+                      type="url"
+                      value={newMediaUrl}
+                      onChange={(e) => setNewMediaUrl(e.target.value)}
+                      placeholder="https://... (opcional se usares upload direto)"
+                      className="flex-1 min-h-[44px] sm:min-h-0 px-3 py-2 border border-[#D4D4D4] rounded-lg min-w-0"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleAddMediaRef}
+                      className="min-h-[44px] sm:min-h-0 px-3 py-2 border border-[#0A0A0A] rounded-lg font-medium hover:bg-[#F4F4F4] whitespace-nowrap"
+                    >
+                      Adicionar URL
+                    </button>
+                  </div>
+
+                  {form.media.length > 0 && (
+                    <div className="space-y-1.5">
+                      {form.media.map((m, idx) => (
+                        <div
+                          key={m.id}
+                          className="flex items-center justify-between gap-2 px-3 py-2 rounded-lg bg-[#F4F4F4]"
+                        >
+                          <span className="flex items-center gap-2 min-w-0">
+                            {m.type === 'video' ? (
+                              <Film className="w-3.5 h-3.5 text-[#FF8A00] shrink-0" />
+                            ) : (
+                              <ImageIcon className="w-3.5 h-3.5 text-[#FF8A00] shrink-0" />
+                            )}
+                            <span className="font-mono text-[11px] truncate">{m.url}</span>
+                            {idx === 0 && (
+                              <span className="text-[10px] font-semibold text-[#15803D] shrink-0">
+                                · Principal
+                              </span>
+                            )}
+                          </span>
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            {idx > 0 && (
+                              <button
+                                type="button"
+                                onClick={() => promoteMediaToPrimary(m.id)}
+                                className="min-h-[36px] px-2 text-[11px] font-medium text-[#0A0A0A] hover:underline whitespace-nowrap"
+                              >
+                                Definir principal
+                              </button>
+                            )}
                             <button
                               type="button"
-                              onClick={() => promoteMediaToPrimary(m.id)}
-                              className="text-[11px] font-medium text-[#0A0A0A] hover:underline whitespace-nowrap"
+                              onClick={() =>
+                                setForm((prev) => ({
+                                  ...prev,
+                                  media: prev.media.filter((x) => x.id !== m.id),
+                                }))
+                              }
+                              aria-label={`Remover media ${m.url}`}
+                              className="min-h-[36px] min-w-[36px] inline-flex items-center justify-center text-[#B91C1C] hover:opacity-80"
                             >
-                              Definir principal
+                              <Trash2 className="w-3.5 h-3.5" />
                             </button>
-                          )}
-                          <button
-                            type="button"
-                            onClick={() =>
-                              setForm((prev) => ({
-                                ...prev,
-                                media: prev.media.filter((x) => x.id !== m.id),
-                              }))
-                            }
-                            aria-label={`Remover media ${m.url}`}
-                            className="text-[#B91C1C] hover:opacity-80"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {formError && (
+                  <div role="alert" className="p-3 rounded-[10px] bg-[#FEF2F2] border border-[#FECACA] text-[#B91C1C] break-words">
+                    {formError}
                   </div>
                 )}
               </div>
 
-              {formError && (
-                <div role="alert" className="p-3 rounded-[10px] bg-[#FEF2F2] border border-[#FECACA] text-[#B91C1C]">
-                  {formError}
-                </div>
-              )}
-
-              <div className="flex items-center justify-end gap-3 pt-2">
+              <div className="shrink-0 px-4 sm:px-6 py-3.5 border-t border-[#E5E5E5] bg-[#FAFAFA] flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2.5">
                 <button
                   type="button"
                   disabled={isSubmitting}
                   onClick={() => setModalOpen(false)}
-                  className="px-4 py-2 border border-[#D4D4D4] rounded-[10px] font-medium hover:bg-[#F4F4F4] disabled:opacity-50"
+                  className="min-h-[44px] sm:min-h-0 px-4 py-2 bg-white border border-[#D4D4D4] rounded-[10px] font-medium hover:bg-[#F4F4F4] disabled:opacity-50"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting || isUploadingMedia}
-                  className="btn-bercali-primary px-5 py-2 rounded-[10px] disabled:opacity-50"
+                  className="btn-bercali-primary min-h-[44px] sm:min-h-0 px-5 py-2 rounded-[10px] disabled:opacity-50"
                 >
                   {isSubmitting
                     ? 'A guardar...'

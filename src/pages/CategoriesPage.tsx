@@ -165,7 +165,7 @@ export const CategoriesPage: React.FC = () => {
             type="button"
             disabled={isMutating}
             onClick={openCreate}
-            className="btn-bercali-primary px-4 py-2.5 rounded-[10px] text-xs inline-flex items-center gap-2 whitespace-nowrap shrink-0 disabled:opacity-50"
+            className="btn-bercali-primary min-h-[44px] sm:min-h-0 px-4 py-2.5 rounded-[10px] text-xs inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0 w-full sm:w-auto disabled:opacity-50"
           >
             <Plus className="w-4 h-4" />
             <span>Nova Categoria</span>
@@ -186,50 +186,47 @@ export const CategoriesPage: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
           {/* Categories List */}
           <div className="lg:col-span-3 bg-white border border-[#E5E5E5] rounded-xl overflow-hidden">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="border-b border-[#E5E5E5] bg-[#FAFAFA] text-[11px] font-semibold text-[#525252]">
-                  <th className="py-3 px-4">Categoria</th>
-                  <th className="py-3 px-4 text-right">Produtos</th>
-                  <th className="py-3 px-4">Estado</th>
-                  <th className="py-3 px-4 text-right">Ações</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#E5E5E5] text-xs">
-                {snapshot.categories.map((cat) => {
-                  const count = productCounts.get(cat.id) || 0;
-                  const isSelected = activeCategory?.id === cat.id;
-                  return (
-                    <tr
-                      key={cat.id}
-                      onClick={() => setSelectedCategoryId(cat.id)}
-                      className={`cursor-pointer transition-colors ${
-                        isSelected ? 'bg-[#FFF8EB]' : 'hover:bg-[#FAFAFA]'
-                      }`}
-                    >
-                      <td className="py-3.5 px-4">
-                        <p className="font-semibold text-[#0A0A0A]">{cat.name}</p>
-                        <p className="text-[11px] text-[#525252] font-mono">
+            {/* Mobile Stacked Cards (< md) */}
+            <div className="md:hidden divide-y divide-[#E5E5E5] text-xs">
+              {snapshot.categories.map((cat) => {
+                const count = productCounts.get(cat.id) || 0;
+                const isSelected = activeCategory?.id === cat.id;
+                return (
+                  <div
+                    key={cat.id}
+                    onClick={() => setSelectedCategoryId(cat.id)}
+                    className={`p-4 space-y-3 cursor-pointer transition-colors ${
+                      isSelected ? 'bg-[#FFF8EB]' : 'hover:bg-[#FAFAFA]'
+                    }`}
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <p className="font-semibold text-[#0A0A0A] break-words leading-snug">
+                          {cat.name}
+                        </p>
+                        <p className="text-[11px] text-[#525252] font-mono break-all mt-0.5">
                           /{cat.slug} · Atualizada {formatDatePt(cat.updatedAt)}
                         </p>
-                      </td>
-                      <td className="py-3.5 px-4 text-right metric-num font-bold text-[#0A0A0A]">
-                        {count}
-                      </td>
-                      <td className="py-3.5 px-4">
-                        {cat.isActive ? (
-                          <span className="inline-flex items-center gap-1.5 text-[#15803D] font-medium">
-                            <CheckCircle2 className="w-3.5 h-3.5" />
-                            <span>Ativa</span>
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center gap-1.5 text-[#525252] font-medium">
-                            <Clock className="w-3.5 h-3.5" />
-                            <span>Inativa</span>
-                          </span>
-                        )}
-                      </td>
-                      <td className="py-3.5 px-4 text-right" onClick={(e) => e.stopPropagation()}>
+                      </div>
+                      <span className="metric-num font-bold text-[#0A0A0A] shrink-0">
+                        {count} prod.
+                      </span>
+                    </div>
+
+                    <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-[#F4F4F4]">
+                      {cat.isActive ? (
+                        <span className="inline-flex items-center gap-1.5 text-[#15803D] font-medium">
+                          <CheckCircle2 className="w-3.5 h-3.5" />
+                          <span>Ativa</span>
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1.5 text-[#525252] font-medium">
+                          <Clock className="w-3.5 h-3.5" />
+                          <span>Inativa</span>
+                        </span>
+                      )}
+
+                      <div onClick={(e) => e.stopPropagation()}>
                         {canWrite ? (
                           <div className="inline-flex items-center gap-1.5">
                             <button
@@ -237,9 +234,9 @@ export const CategoriesPage: React.FC = () => {
                               disabled={isMutating}
                               onClick={() => openEdit(cat)}
                               aria-label={`Editar categoria ${cat.name}`}
-                              className="p-1.5 rounded-lg border border-[#E5E5E5] hover:bg-white disabled:opacity-40"
+                              className="min-h-[44px] min-w-[44px] rounded-lg border border-[#E5E5E5] bg-white hover:bg-[#F4F4F4] inline-flex items-center justify-center disabled:opacity-40"
                             >
-                              <Edit3 className="w-3.5 h-3.5" />
+                              <Edit3 className="w-4 h-4" />
                             </button>
                             <button
                               type="button"
@@ -257,46 +254,144 @@ export const CategoriesPage: React.FC = () => {
                                   ? `Desativar categoria ${cat.name}`
                                   : `Ativar categoria ${cat.name}`
                               }
-                              className="p-1.5 rounded-lg border border-[#E5E5E5] hover:bg-white disabled:opacity-40"
+                              className="min-h-[44px] min-w-[44px] rounded-lg border border-[#E5E5E5] bg-white hover:bg-[#F4F4F4] inline-flex items-center justify-center disabled:opacity-40"
                             >
-                              <Power className="w-3.5 h-3.5" />
+                              <Power className="w-4 h-4" />
                             </button>
                             <button
                               type="button"
                               disabled={isMutating}
                               onClick={() => handleTryDelete(cat)}
                               aria-label={`Eliminar categoria ${cat.name}`}
-                              className="p-1.5 rounded-lg border border-[#E5E5E5] text-[#525252] hover:text-[#B91C1C] hover:bg-[#FEF2F2] disabled:opacity-40"
+                              className="min-h-[44px] min-w-[44px] rounded-lg border border-[#E5E5E5] bg-white text-[#525252] hover:text-[#B91C1C] hover:bg-[#FEF2F2] inline-flex items-center justify-center disabled:opacity-40"
                             >
-                              <Trash2 className="w-3.5 h-3.5" />
+                              <Trash2 className="w-4 h-4" />
                             </button>
                           </div>
                         ) : (
                           <span className="text-[11px] text-[#737373]">Só leitura</span>
                         )}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Desktop Table (md+) */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="border-b border-[#E5E5E5] bg-[#FAFAFA] text-[11px] font-semibold text-[#525252]">
+                    <th className="py-3 px-4">Categoria</th>
+                    <th className="py-3 px-4 text-right">Produtos</th>
+                    <th className="py-3 px-4">Estado</th>
+                    <th className="py-3 px-4 text-right">Ações</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#E5E5E5] text-xs">
+                  {snapshot.categories.map((cat) => {
+                    const count = productCounts.get(cat.id) || 0;
+                    const isSelected = activeCategory?.id === cat.id;
+                    return (
+                      <tr
+                        key={cat.id}
+                        onClick={() => setSelectedCategoryId(cat.id)}
+                        className={`cursor-pointer transition-colors ${
+                          isSelected ? 'bg-[#FFF8EB]' : 'hover:bg-[#FAFAFA]'
+                        }`}
+                      >
+                        <td className="py-3.5 px-4">
+                          <p className="font-semibold text-[#0A0A0A]">{cat.name}</p>
+                          <p className="text-[11px] text-[#525252] font-mono">
+                            /{cat.slug} · Atualizada {formatDatePt(cat.updatedAt)}
+                          </p>
+                        </td>
+                        <td className="py-3.5 px-4 text-right metric-num font-bold text-[#0A0A0A]">
+                          {count}
+                        </td>
+                        <td className="py-3.5 px-4">
+                          {cat.isActive ? (
+                            <span className="inline-flex items-center gap-1.5 text-[#15803D] font-medium">
+                              <CheckCircle2 className="w-3.5 h-3.5" />
+                              <span>Ativa</span>
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1.5 text-[#525252] font-medium">
+                              <Clock className="w-3.5 h-3.5" />
+                              <span>Inativa</span>
+                            </span>
+                          )}
+                        </td>
+                        <td className="py-3.5 px-4 text-right" onClick={(e) => e.stopPropagation()}>
+                          {canWrite ? (
+                            <div className="inline-flex items-center gap-1.5">
+                              <button
+                                type="button"
+                                disabled={isMutating}
+                                onClick={() => openEdit(cat)}
+                                aria-label={`Editar categoria ${cat.name}`}
+                                className="p-1.5 rounded-lg border border-[#E5E5E5] hover:bg-white disabled:opacity-40"
+                              >
+                                <Edit3 className="w-3.5 h-3.5" />
+                              </button>
+                              <button
+                                type="button"
+                                disabled={isMutating}
+                                onClick={() =>
+                                  void toggleCategoryActive(cat.id, !cat.isActive).catch((err) =>
+                                    notify(
+                                      'error',
+                                      err instanceof Error ? err.message : 'Erro ao atualizar categoria.'
+                                    )
+                                  )
+                                }
+                                aria-label={
+                                  cat.isActive
+                                    ? `Desativar categoria ${cat.name}`
+                                    : `Ativar categoria ${cat.name}`
+                                }
+                                className="p-1.5 rounded-lg border border-[#E5E5E5] hover:bg-white disabled:opacity-40"
+                              >
+                                <Power className="w-3.5 h-3.5" />
+                              </button>
+                              <button
+                                type="button"
+                                disabled={isMutating}
+                                onClick={() => handleTryDelete(cat)}
+                                aria-label={`Eliminar categoria ${cat.name}`}
+                                className="p-1.5 rounded-lg border border-[#E5E5E5] text-[#525252] hover:text-[#B91C1C] hover:bg-[#FEF2F2] disabled:opacity-40"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          ) : (
+                            <span className="text-[11px] text-[#737373]">Só leitura</span>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           </div>
 
           {/* Category Detail & Product Association */}
-          <div className="lg:col-span-2 bg-white border border-[#E5E5E5] rounded-xl p-5 space-y-4">
+          <div className="lg:col-span-2 bg-white border border-[#E5E5E5] rounded-xl p-4 sm:p-5 space-y-4">
             {activeCategory && (
               <>
                 <div className="pb-3 border-b border-[#E5E5E5]">
                   <div className="flex items-center gap-2 text-[#FF8A00] mb-1">
-                    <FolderTree className="w-4 h-4" />
+                    <FolderTree className="w-4 h-4 shrink-0" />
                     <span className="text-xs font-semibold text-[#525252]">
                       Produtos na categoria
                     </span>
                   </div>
-                  <h2 className="font-brand font-bold text-lg text-[#0A0A0A]">
+                  <h2 className="font-brand font-bold text-lg text-[#0A0A0A] break-words">
                     {activeCategory.name}
                   </h2>
-                  <p className="text-xs text-[#525252] mt-1 leading-relaxed">
+                  <p className="text-xs text-[#525252] mt-1 leading-relaxed break-words">
                     {activeCategory.description || 'Sem descrição adicional.'}
                   </p>
                 </div>
@@ -309,12 +404,12 @@ export const CategoriesPage: React.FC = () => {
                     >
                       Associar produto existente a esta categoria
                     </label>
-                    <div className="flex gap-2">
+                    <div className="flex flex-col sm:flex-row gap-2">
                       <select
                         id="assign-prod-select"
                         value={productToAssign}
                         onChange={(e) => setProductToAssign(e.target.value)}
-                        className="flex-1 px-3 py-2 text-xs border border-[#D4D4D4] rounded-lg bg-white min-w-0"
+                        className="flex-1 min-h-[44px] sm:min-h-0 px-3 py-2 text-xs border border-[#D4D4D4] rounded-lg bg-white min-w-0"
                       >
                         <option value="">Selecionar produto...</option>
                         {otherProducts.map((p) => (
@@ -338,7 +433,7 @@ export const CategoriesPage: React.FC = () => {
                               );
                           }
                         }}
-                        className="px-3 py-2 text-xs font-semibold bg-[#0A0A0A] text-white rounded-lg disabled:opacity-40 whitespace-nowrap"
+                        className="min-h-[44px] sm:min-h-0 px-3 py-2 text-xs font-semibold bg-[#0A0A0A] text-white rounded-lg disabled:opacity-40 whitespace-nowrap"
                       >
                         Associar
                       </button>
@@ -379,14 +474,19 @@ export const CategoriesPage: React.FC = () => {
       {/* Create / Edit Category Modal */}
       {modalOpen && (
         <div
-          className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4"
+          className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-3 sm:p-4 pt-safe pb-safe"
           role="dialog"
           aria-modal="true"
           aria-labelledby="cat-modal-title"
+          onClick={(e) => {
+            if (e.target === e.currentTarget && !isSubmitting) {
+              setModalOpen(false);
+            }
+          }}
         >
-          <div className="bg-white rounded-xl border border-[#E5E5E5] max-w-md w-full p-6">
-            <div className="flex items-center justify-between pb-3 mb-4 border-b border-[#E5E5E5]">
-              <h2 id="cat-modal-title" className="font-brand font-bold text-lg text-[#0A0A0A]">
+          <div className="bg-white rounded-xl border border-[#E5E5E5] max-w-md w-full max-h-[90dvh] flex flex-col overflow-hidden">
+            <div className="shrink-0 flex items-center justify-between gap-3 px-4 sm:px-6 py-4 border-b border-[#E5E5E5]">
+              <h2 id="cat-modal-title" className="font-brand font-bold text-base sm:text-lg text-[#0A0A0A]">
                 {editingCategory ? 'Editar Categoria' : 'Nova Categoria'}
               </h2>
               <button
@@ -394,83 +494,89 @@ export const CategoriesPage: React.FC = () => {
                 disabled={isSubmitting}
                 onClick={() => setModalOpen(false)}
                 aria-label="Fechar janela"
-                className="p-1.5 rounded-lg hover:bg-[#F4F4F4]"
+                className="min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 p-2 rounded-lg hover:bg-[#F4F4F4] inline-flex items-center justify-center shrink-0"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            <form onSubmit={(e) => void handleSave(e)} noValidate className="space-y-4 text-xs">
-              <div>
-                <label htmlFor="cat-name" className="block font-medium text-[#0A0A0A] mb-1">
-                  Nome da categoria *
-                </label>
-                <input
-                  id="cat-name"
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Ex.: Acessórios e Cabos"
-                  className="w-full px-3 py-2 border border-[#D4D4D4] rounded-[10px] focus:border-[#FF8A00] focus:outline-none"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="cat-slug" className="block font-medium text-[#0A0A0A] mb-1">
-                  Slug URL (opcional — gerado automaticamente)
-                </label>
-                <input
-                  id="cat-slug"
-                  type="text"
-                  value={slug}
-                  onChange={(e) => setSlug(e.target.value)}
-                  placeholder="Ex.: acessorios-e-cabos"
-                  className="w-full px-3 py-2 font-mono border border-[#D4D4D4] rounded-[10px] focus:border-[#FF8A00] focus:outline-none"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="cat-desc" className="block font-medium text-[#0A0A0A] mb-1">
-                  Descrição
-                </label>
-                <textarea
-                  id="cat-desc"
-                  rows={3}
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Breve descrição da secção..."
-                  className="w-full px-3 py-2 border border-[#D4D4D4] rounded-[10px] focus:border-[#FF8A00] focus:outline-none"
-                />
-              </div>
-
-              <label className="inline-flex items-center gap-2 font-medium text-[#0A0A0A]">
-                <input
-                  type="checkbox"
-                  checked={isActive}
-                  onChange={(e) => setIsActive(e.target.checked)}
-                />
-                <span>Categoria ativa na loja</span>
-              </label>
-
-              {formError && (
-                <div role="alert" className="p-3 rounded-[10px] bg-[#FEF2F2] border border-[#FECACA] text-[#B91C1C]">
-                  {formError}
+            <form
+              onSubmit={(e) => void handleSave(e)}
+              noValidate
+              className="flex flex-col flex-1 min-h-0 text-xs"
+            >
+              <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-4 sm:p-6 space-y-4">
+                <div>
+                  <label htmlFor="cat-name" className="block font-medium text-[#0A0A0A] mb-1">
+                    Nome da categoria *
+                  </label>
+                  <input
+                    id="cat-name"
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Ex.: Acessórios e Cabos"
+                    className="w-full min-h-[44px] sm:min-h-0 px-3 py-2 border border-[#D4D4D4] rounded-[10px] focus:border-[#FF8A00] focus:outline-none"
+                  />
                 </div>
-              )}
 
-              <div className="flex items-center justify-end gap-3 pt-2">
+                <div>
+                  <label htmlFor="cat-slug" className="block font-medium text-[#0A0A0A] mb-1">
+                    Slug URL (opcional — gerado automaticamente)
+                  </label>
+                  <input
+                    id="cat-slug"
+                    type="text"
+                    value={slug}
+                    onChange={(e) => setSlug(e.target.value)}
+                    placeholder="Ex.: acessorios-e-cabos"
+                    className="w-full min-h-[44px] sm:min-h-0 px-3 py-2 font-mono border border-[#D4D4D4] rounded-[10px] focus:border-[#FF8A00] focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="cat-desc" className="block font-medium text-[#0A0A0A] mb-1">
+                    Descrição
+                  </label>
+                  <textarea
+                    id="cat-desc"
+                    rows={3}
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    placeholder="Breve descrição da secção..."
+                    className="w-full px-3 py-2 border border-[#D4D4D4] rounded-[10px] focus:border-[#FF8A00] focus:outline-none"
+                  />
+                </div>
+
+                <label className="min-h-[36px] inline-flex items-center gap-2 font-medium text-[#0A0A0A] cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={isActive}
+                    onChange={(e) => setIsActive(e.target.checked)}
+                  />
+                  <span>Categoria ativa na loja</span>
+                </label>
+
+                {formError && (
+                  <div role="alert" className="p-3 rounded-[10px] bg-[#FEF2F2] border border-[#FECACA] text-[#B91C1C] break-words">
+                    {formError}
+                  </div>
+                )}
+              </div>
+
+              <div className="shrink-0 px-4 sm:px-6 py-3.5 border-t border-[#E5E5E5] bg-[#FAFAFA] flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2.5">
                 <button
                   type="button"
                   disabled={isSubmitting}
                   onClick={() => setModalOpen(false)}
-                  className="px-4 py-2 border border-[#D4D4D4] rounded-[10px] font-medium hover:bg-[#F4F4F4] disabled:opacity-50"
+                  className="min-h-[44px] sm:min-h-0 px-4 py-2 bg-white border border-[#D4D4D4] rounded-[10px] font-medium hover:bg-[#F4F4F4] disabled:opacity-50"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="btn-bercali-primary px-4 py-2 rounded-[10px] disabled:opacity-50"
+                  className="btn-bercali-primary min-h-[44px] sm:min-h-0 px-4 py-2 rounded-[10px] disabled:opacity-50"
                 >
                   {isSubmitting
                     ? 'A guardar...'

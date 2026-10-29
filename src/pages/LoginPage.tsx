@@ -120,8 +120,8 @@ export const LoginPage: React.FC = () => {
   const isBackendReady = backendStatus.state === 'ready';
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A] text-white flex flex-col justify-center items-center p-4">
-      <div className="w-full max-w-md bg-[#1A1A1A] border border-[#2A2A2A] rounded-xl p-6 sm:p-8">
+    <div className="min-h-screen bg-[#0A0A0A] text-white flex flex-col justify-center items-center p-4 pt-safe pb-safe pl-safe pr-safe">
+      <div className="w-full max-w-md bg-[#1A1A1A] border border-[#2A2A2A] rounded-xl p-5 sm:p-8">
         <div className="flex flex-col items-center text-center mb-6">
           <BrandLogo variant="login" className="mb-4" />
           <BercaliSpeedLines className="mb-3" />
@@ -150,9 +150,9 @@ export const LoginPage: React.FC = () => {
               ) : (
                 <AlertTriangle className="w-4 h-4 text-[#FFC400] shrink-0 mt-0.5" />
               )}
-              <div>
+              <div className="min-w-0">
                 <p className="font-semibold text-white">{backendStatus.summaryLabel}</p>
-                <p className="text-[11px] text-[#A3A3A3] leading-relaxed mt-0.5">
+                <p className="text-[11px] text-[#A3A3A3] leading-relaxed mt-0.5 break-words">
                   {backendStatus.detailMessage}
                 </p>
               </div>
@@ -164,21 +164,21 @@ export const LoginPage: React.FC = () => {
               disabled={isCheckingConn}
               aria-label="Verificar novamente ligação ao Supabase"
               title="Testar ligação novamente"
-              className="p-1.5 rounded-lg border border-[#333333] hover:border-[#FF8A00] text-[#D4D4D4] shrink-0"
+              className="min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 p-2 sm:p-1.5 inline-flex items-center justify-center rounded-lg border border-[#333333] hover:border-[#FF8A00] text-[#D4D4D4] shrink-0"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${isCheckingConn ? 'animate-spin text-[#FF8A00]' : ''}`} />
             </button>
           </div>
 
           {(!isBackendReady || session.inactiveProfileEmail) && (
-            <div className="mt-3 pt-2.5 border-t border-[#262626] flex items-center justify-between gap-2">
+            <div className="mt-3 pt-2.5 border-t border-[#262626] flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <span className="text-[11px] text-[#A3A3A3]">
                 Precisas de aplicar as migrações ou ativar o primeiro super_admin?
               </span>
               <button
                 type="button"
                 onClick={() => setSetupGuideOpen(true)}
-                className="text-[11px] font-semibold text-[#FFC400] hover:underline whitespace-nowrap"
+                className="min-h-[44px] sm:min-h-0 inline-flex items-center self-start sm:self-auto text-[11px] font-semibold text-[#FFC400] hover:underline whitespace-nowrap"
               >
                 Ver guia SQL
               </button>
@@ -209,7 +209,7 @@ export const LoginPage: React.FC = () => {
                 autoComplete="new-password"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                className="w-full px-3.5 py-2.5 text-sm bg-[#0A0A0A] border border-[#333333] focus:border-[#FF8A00] focus:outline-none rounded-[10px] text-white"
+                className="w-full min-h-[44px] px-3.5 py-2.5 text-sm bg-[#0A0A0A] border border-[#333333] focus:border-[#FF8A00] focus:outline-none rounded-[10px] text-white"
               />
             </div>
 
@@ -223,7 +223,7 @@ export const LoginPage: React.FC = () => {
                 autoComplete="new-password"
                 value={confirmNewPassword}
                 onChange={(e) => setConfirmNewPassword(e.target.value)}
-                className="w-full px-3.5 py-2.5 text-sm bg-[#0A0A0A] border border-[#333333] focus:border-[#FF8A00] focus:outline-none rounded-[10px] text-white"
+                className="w-full min-h-[44px] px-3.5 py-2.5 text-sm bg-[#0A0A0A] border border-[#333333] focus:border-[#FF8A00] focus:outline-none rounded-[10px] text-white"
               />
             </div>
 
@@ -236,7 +236,7 @@ export const LoginPage: React.FC = () => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="btn-bercali-primary w-full py-2.5 px-4 rounded-[10px] text-xs uppercase tracking-wide flex items-center justify-center gap-2 disabled:opacity-50"
+              className="btn-bercali-primary w-full min-h-[44px] py-2.5 px-4 rounded-[10px] text-xs uppercase tracking-wide flex items-center justify-center gap-2 disabled:opacity-50"
             >
               <KeyRound className="w-4 h-4" />
               <span>{isSubmitting ? 'A guardar...' : 'Definir Nova Palavra-passe'}</span>
@@ -255,12 +255,12 @@ export const LoginPage: React.FC = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="nome@bercalistore.ao"
-                className="w-full px-3.5 py-2.5 text-sm bg-[#0A0A0A] border border-[#333333] focus:border-[#FF8A00] focus:outline-none rounded-[10px] text-white"
+                className="w-full min-h-[44px] px-3.5 py-2.5 text-sm bg-[#0A0A0A] border border-[#333333] focus:border-[#FF8A00] focus:outline-none rounded-[10px] text-white"
               />
             </div>
 
             <div>
-              <div className="flex items-center justify-between mb-1.5">
+              <div className="flex flex-wrap items-center justify-between gap-1 mb-1">
                 <label htmlFor="login-password" className="text-xs font-medium text-[#E5E5E5]">
                   Palavra-passe
                 </label>
@@ -271,7 +271,7 @@ export const LoginPage: React.FC = () => {
                     setRecoveryNotice(null);
                     setMode('recover');
                   }}
-                  className="text-[11px] text-[#FF8A00] hover:underline"
+                  className="min-h-[44px] sm:min-h-0 px-1 inline-flex items-center text-[11px] text-[#FF8A00] hover:underline"
                 >
                   Recuperar palavra-passe
                 </button>
@@ -283,7 +283,7 @@ export const LoginPage: React.FC = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full px-3.5 py-2.5 text-sm bg-[#0A0A0A] border border-[#333333] focus:border-[#FF8A00] focus:outline-none rounded-[10px] text-white"
+                className="w-full min-h-[44px] px-3.5 py-2.5 text-sm bg-[#0A0A0A] border border-[#333333] focus:border-[#FF8A00] focus:outline-none rounded-[10px] text-white"
               />
             </div>
 
@@ -296,7 +296,7 @@ export const LoginPage: React.FC = () => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="btn-bercali-primary w-full py-2.5 px-4 rounded-[10px] text-xs uppercase tracking-wide flex items-center justify-center gap-2 disabled:opacity-50"
+              className="btn-bercali-primary w-full min-h-[44px] py-2.5 px-4 rounded-[10px] text-xs uppercase tracking-wide flex items-center justify-center gap-2 disabled:opacity-50"
             >
               {isSubmitting ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
@@ -319,7 +319,7 @@ export const LoginPage: React.FC = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="nome@bercalistore.ao"
-                className="w-full px-3.5 py-2.5 text-sm bg-[#0A0A0A] border border-[#333333] focus:border-[#FF8A00] focus:outline-none rounded-[10px] text-white"
+                className="w-full min-h-[44px] px-3.5 py-2.5 text-sm bg-[#0A0A0A] border border-[#333333] focus:border-[#FF8A00] focus:outline-none rounded-[10px] text-white"
               />
             </div>
 
@@ -338,7 +338,7 @@ export const LoginPage: React.FC = () => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="btn-bercali-primary w-full py-2.5 px-4 rounded-[10px] text-xs uppercase tracking-wide flex items-center justify-center gap-2 disabled:opacity-50"
+              className="btn-bercali-primary w-full min-h-[44px] py-2.5 px-4 rounded-[10px] text-xs uppercase tracking-wide flex items-center justify-center gap-2 disabled:opacity-50"
             >
               {isSubmitting ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
@@ -355,7 +355,7 @@ export const LoginPage: React.FC = () => {
                 setRecoveryNotice(null);
                 setMode('login');
               }}
-              className="w-full py-2 text-xs text-[#A3A3A3] hover:text-white flex items-center justify-center gap-1.5"
+              className="w-full min-h-[44px] py-2 text-xs text-[#A3A3A3] hover:text-white flex items-center justify-center gap-1.5"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>Voltar ao início de sessão</span>
@@ -371,16 +371,16 @@ export const LoginPage: React.FC = () => {
       {/* Modal de Instruções SQL & Bootstrap do Primeiro Superadministrador */}
       {setupGuideOpen && (
         <div
-          className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4"
+          className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-3 sm:p-4 pt-safe pb-safe"
           role="dialog"
           aria-modal="true"
           aria-labelledby="sql-setup-guide-title"
         >
-          <div className="bg-[#1A1A1A] border border-[#333333] rounded-xl max-w-xl w-full p-6 text-xs text-[#E5E5E5] space-y-4 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between pb-3 border-b border-[#2A2A2A]">
-              <div className="flex items-center gap-2 text-[#FFC400]">
-                <Database className="w-4 h-4" />
-                <h2 id="sql-setup-guide-title" className="font-brand font-bold text-base text-white">
+          <div className="bg-[#1A1A1A] border border-[#333333] rounded-xl max-w-xl w-full max-h-[90dvh] flex flex-col overflow-hidden text-xs text-[#E5E5E5]">
+            <div className="shrink-0 flex items-center justify-between gap-3 px-4 py-3.5 sm:px-6 sm:py-4 border-b border-[#2A2A2A]">
+              <div className="flex items-center gap-2 text-[#FFC400] min-w-0">
+                <Database className="w-4 h-4 shrink-0" />
+                <h2 id="sql-setup-guide-title" className="font-brand font-bold text-sm sm:text-base text-white">
                   Configuração Inicial do Projeto Supabase
                 </h2>
               </div>
@@ -388,55 +388,57 @@ export const LoginPage: React.FC = () => {
                 type="button"
                 onClick={() => setSetupGuideOpen(false)}
                 aria-label="Fechar guia de configuração"
-                className="p-1.5 rounded-lg hover:bg-[#262626] text-[#A3A3A3]"
+                className="min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 p-2 sm:p-1.5 inline-flex items-center justify-center rounded-lg hover:bg-[#262626] text-[#A3A3A3] shrink-0"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            <div className="space-y-2">
-              <p className="font-semibold text-white">
-                1. Variáveis de Ambiente Públicas
-              </p>
-              <p className="text-[#A3A3A3] leading-relaxed">
-                Confirma que <span className="font-mono text-white">VITE_SUPABASE_URL</span> e{' '}
-                <span className="font-mono text-white">VITE_SUPABASE_ANON_KEY</span> apontam para o teu projeto Supabase (nunca uses a chave <span className="font-mono text-[#FCA5A5]">service_role</span>).
-              </p>
-            </div>
-
-            <div className="space-y-2">
-              <p className="font-semibold text-white">
-                2. Executar Migrações Versionadas no Supabase SQL Editor
-              </p>
-              <div className="bg-[#0A0A0A] border border-[#2A2A2A] rounded-lg p-3 space-y-1.5 font-mono text-[11px] text-[#FFC400]">
-                {SQL_MIGRATION_FILES.map((file, idx) => (
-                  <p key={file}>
-                    {idx + 1}. {file}
-                  </p>
-                ))}
+            <div className="flex-1 min-h-0 overflow-y-auto p-4 sm:p-6 space-y-4">
+              <div className="space-y-2">
+                <p className="font-semibold text-white">
+                  1. Variáveis de Ambiente Públicas
+                </p>
+                <p className="text-[#A3A3A3] leading-relaxed">
+                  Confirma que <span className="font-mono text-white">VITE_SUPABASE_URL</span> e{' '}
+                  <span className="font-mono text-white">VITE_SUPABASE_ANON_KEY</span> apontam para o teu projeto Supabase (nunca uses a chave <span className="font-mono text-[#FCA5A5]">service_role</span>).
+                </p>
               </div>
-            </div>
 
-            <div className="space-y-2">
-              <p className="font-semibold text-white">
-                3. Ativar o Primeiro Superadministrador com Segurança
-              </p>
-              <p className="text-[#A3A3A3] leading-relaxed">
-                Cria o utilizador em <strong>Authentication &rarr; Users</strong> no painel do Supabase e executa no <strong>SQL Editor</strong>:
-              </p>
-              <pre className="bg-[#0A0A0A] border border-[#2A2A2A] rounded-lg p-3 font-mono text-[11px] text-[#E5E5E5] overflow-x-auto">
+              <div className="space-y-2">
+                <p className="font-semibold text-white">
+                  2. Executar Migrações Versionadas no Supabase SQL Editor
+                </p>
+                <div className="bg-[#0A0A0A] border border-[#2A2A2A] rounded-lg p-3 space-y-1.5 font-mono text-[11px] text-[#FFC400]">
+                  {SQL_MIGRATION_FILES.map((file, idx) => (
+                    <p key={file} className="break-all">
+                      {idx + 1}. {file}
+                    </p>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <p className="font-semibold text-white">
+                  3. Ativar o Primeiro Superadministrador com Segurança
+                </p>
+                <p className="text-[#A3A3A3] leading-relaxed">
+                  Cria o utilizador em <strong>Authentication &rarr; Users</strong> no painel do Supabase e executa no <strong>SQL Editor</strong>:
+                </p>
+                <pre className="bg-[#0A0A0A] border border-[#2A2A2A] rounded-lg p-3 font-mono text-[11px] text-[#E5E5E5] overflow-x-auto">
 {`select public.bootstrap_first_super_admin(
   '${session.inactiveProfileEmail || 'direcao@bercalistore.ao'}',
   'Direção Bercali Store'
 );`}
-              </pre>
+                </pre>
+              </div>
             </div>
 
-            <div className="flex justify-end pt-2">
+            <div className="shrink-0 flex justify-end px-4 py-3 sm:px-6 sm:py-4 border-t border-[#2A2A2A] bg-[#1A1A1A]">
               <button
                 type="button"
                 onClick={() => setSetupGuideOpen(false)}
-                className="btn-bercali-primary px-4 py-2 rounded-[10px]"
+                className="btn-bercali-primary w-full sm:w-auto min-h-[44px] sm:min-h-0 px-4 py-2.5 sm:py-2 rounded-[10px]"
               >
                 Concluído
               </button>

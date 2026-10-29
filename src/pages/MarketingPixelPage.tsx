@@ -239,16 +239,16 @@ export const MarketingPixelPage: React.FC = () => {
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2.5">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
           <div
             role="group"
             aria-label="Secção de Marketing e Integrações"
-            className="inline-flex items-center gap-1 p-1 bg-white border border-[#E5E5E5] rounded-[10px]"
+            className="w-full sm:w-auto flex flex-wrap items-center gap-1 p-1 bg-white border border-[#E5E5E5] rounded-[10px]"
           >
             <button
               type="button"
               onClick={() => setActiveTab('pixel')}
-              className={`px-3 py-1.5 text-xs font-medium rounded-lg inline-flex items-center gap-1.5 whitespace-nowrap ${
+              className={`min-h-[44px] sm:min-h-0 flex-1 sm:flex-initial justify-center px-3 py-2 sm:py-1.5 text-xs font-medium rounded-lg inline-flex items-center gap-1.5 whitespace-nowrap ${
                 activeTab === 'pixel' ? 'bg-[#0A0A0A] text-white' : 'text-[#525252]'
               }`}
             >
@@ -258,7 +258,7 @@ export const MarketingPixelPage: React.FC = () => {
             <button
               type="button"
               onClick={() => setActiveTab('plugins')}
-              className={`px-3 py-1.5 text-xs font-medium rounded-lg inline-flex items-center gap-1.5 whitespace-nowrap ${
+              className={`min-h-[44px] sm:min-h-0 flex-1 sm:flex-initial justify-center px-3 py-2 sm:py-1.5 text-xs font-medium rounded-lg inline-flex items-center gap-1.5 whitespace-nowrap ${
                 activeTab === 'plugins' ? 'bg-[#0A0A0A] text-white' : 'text-[#525252]'
               }`}
             >
@@ -272,7 +272,7 @@ export const MarketingPixelPage: React.FC = () => {
               type="button"
               disabled={isSaving || isMutating}
               onClick={() => void handleTogglePixelPower()}
-              className={`px-4 py-2 rounded-[10px] text-xs font-bold inline-flex items-center gap-2 whitespace-nowrap shrink-0 border disabled:opacity-50 ${
+              className={`min-h-[44px] sm:min-h-0 justify-center px-4 py-2.5 sm:py-2 rounded-[10px] text-xs font-bold inline-flex items-center gap-2 whitespace-nowrap shrink-0 border disabled:opacity-50 ${
                 ms.isActive
                   ? 'bg-white border-[#0A0A0A] text-[#0A0A0A] hover:bg-[#F4F4F4]'
                   : 'btn-bercali-primary border-transparent'
@@ -298,13 +298,13 @@ export const MarketingPixelPage: React.FC = () => {
             {integrationsCatalog.map((item) => (
               <div
                 key={item.id}
-                className="bg-white border border-[#E5E5E5] rounded-xl p-5 flex flex-col justify-between gap-4"
+                className="bg-white border border-[#E5E5E5] rounded-xl p-4 sm:p-5 flex flex-col justify-between gap-4"
               >
                 <div className="space-y-2">
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
+                  <div className="flex flex-wrap items-start justify-between gap-2">
+                    <div className="min-w-0">
                       <p className="text-[11px] text-[#737373]">{item.category}</p>
-                      <h2 className="font-brand font-bold text-sm text-[#0A0A0A] mt-0.5">
+                      <h2 className="font-brand font-bold text-sm text-[#0A0A0A] mt-0.5 break-words">
                         {item.name}
                       </h2>
                     </div>
@@ -330,13 +330,13 @@ export const MarketingPixelPage: React.FC = () => {
                   <p className="text-[#525252] leading-relaxed">{item.description}</p>
                 </div>
 
-                <div className="pt-3 border-t border-[#E5E5E5] flex items-center justify-between gap-2 text-[11px] text-[#737373]">
+                <div className="pt-3 border-t border-[#E5E5E5] flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[11px] text-[#737373]">
                   <span>{item.securityNote}</span>
                   {item.id === 'meta-pixel' && (
                     <button
                       type="button"
                       onClick={() => setActiveTab('pixel')}
-                      className="font-semibold text-[#FF8A00] hover:underline whitespace-nowrap shrink-0"
+                      className="min-h-[44px] sm:min-h-0 inline-flex items-center self-start sm:self-auto font-semibold text-[#FF8A00] hover:underline whitespace-nowrap shrink-0"
                     >
                       Gerir Pixel
                     </button>
@@ -351,7 +351,7 @@ export const MarketingPixelPage: React.FC = () => {
            META PIXEL CONFIGURATION SECTION
            ===================================================================== */
         <>
-          <div className="bg-[#0A0A0A] text-white rounded-xl p-5 grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+          <div className="bg-[#0A0A0A] text-white rounded-xl p-4 sm:p-5 grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
             <div>
               <p className="font-brand font-bold text-[#FFC400] mb-1">
                 Estado real em marketing_settings
@@ -395,7 +395,7 @@ export const MarketingPixelPage: React.FC = () => {
             <form
               onSubmit={(e) => void handleSave(e)}
               noValidate
-              className="lg:col-span-7 bg-white border border-[#E5E5E5] rounded-xl p-6 space-y-5 text-xs"
+              className="lg:col-span-7 bg-white border border-[#E5E5E5] rounded-xl p-4 sm:p-6 space-y-5 text-xs"
             >
               <h2 className="font-brand font-bold text-base text-[#0A0A0A]">
                 Configuração do Identificador Meta Pixel
@@ -413,7 +413,7 @@ export const MarketingPixelPage: React.FC = () => {
                   value={pixelId}
                   onChange={(e) => setPixelId(e.target.value)}
                   placeholder="Ex.: 123456789012345"
-                  className={`w-full px-3.5 py-2.5 font-mono text-sm border rounded-[10px] focus:border-[#FF8A00] focus:outline-none disabled:bg-[#F4F4F4] ${
+                  className={`w-full min-h-[44px] px-3.5 py-2.5 font-mono text-sm border rounded-[10px] focus:border-[#FF8A00] focus:outline-none disabled:bg-[#F4F4F4] ${
                     livePixelInvalid ? 'border-[#EF4444] bg-[#FEF2F2]' : 'border-[#D4D4D4]'
                   }`}
                 />
@@ -469,9 +469,12 @@ export const MarketingPixelPage: React.FC = () => {
                 </h3>
                 <div className="border border-[#E5E5E5] rounded-[10px] divide-y divide-[#E5E5E5]">
                   {events.map((ev) => (
-                    <div key={ev.eventName} className="p-3.5 flex items-start justify-between gap-4">
+                    <div
+                      key={ev.eventName}
+                      className="p-3.5 flex flex-col sm:flex-row sm:items-start justify-between gap-2.5 sm:gap-4"
+                    >
                       <div className="min-w-0">
-                        <div className="flex items-center gap-2">
+                        <div className="flex flex-wrap items-center gap-2">
                           <span className="font-mono font-bold text-[#0A0A0A]">{ev.eventName}</span>
                           {ev.requiresRealConfirmation && (
                             <span className="text-[11px] font-semibold text-[#B45309]">
@@ -482,7 +485,7 @@ export const MarketingPixelPage: React.FC = () => {
                         <p className="text-[#525252] mt-0.5 leading-relaxed">{ev.description}</p>
                         <p className="text-[11px] text-[#737373] mt-0.5">Regra: {ev.triggerRule}</p>
                       </div>
-                      <label className="inline-flex items-center gap-1.5 shrink-0 cursor-pointer">
+                      <label className="min-h-[40px] sm:min-h-0 inline-flex items-center gap-1.5 shrink-0 cursor-pointer self-start">
                         <input
                           type="checkbox"
                           disabled={!canWrite || isSaving}
@@ -515,7 +518,7 @@ export const MarketingPixelPage: React.FC = () => {
                   <button
                     type="submit"
                     disabled={isSaving || isMutating}
-                    className="btn-bercali-primary px-5 py-2.5 rounded-[10px] inline-flex items-center gap-2 disabled:opacity-50"
+                    className="btn-bercali-primary w-full sm:w-auto min-h-[44px] sm:min-h-0 px-5 py-2.5 rounded-[10px] inline-flex items-center justify-center gap-2 disabled:opacity-50"
                   >
                     <Save className="w-4 h-4" />
                     <span>{isSaving ? 'A guardar...' : 'Guardar configuração'}</span>
@@ -526,9 +529,9 @@ export const MarketingPixelPage: React.FC = () => {
 
             {/* Instructions for Testing & Security */}
             <div className="lg:col-span-5 space-y-5 text-xs">
-              <div className="bg-white border border-[#E5E5E5] rounded-xl p-5 space-y-3">
+              <div className="bg-white border border-[#E5E5E5] rounded-xl p-4 sm:p-5 space-y-3">
                 <h2 className="font-brand font-bold text-base text-[#0A0A0A] flex items-center gap-2">
-                  <HelpCircle className="w-4 h-4 text-[#FF8A00]" />
+                  <HelpCircle className="w-4 h-4 text-[#FF8A00] shrink-0" />
                   <span>Instruções para testar na loja pública</span>
                 </h2>
                 <ol className="space-y-2.5 text-[#525252] leading-relaxed list-decimal list-inside">
@@ -547,9 +550,9 @@ export const MarketingPixelPage: React.FC = () => {
                 </ol>
               </div>
 
-              <div className="bg-white border border-[#E5E5E5] rounded-xl p-5 space-y-3">
+              <div className="bg-white border border-[#E5E5E5] rounded-xl p-4 sm:p-5 space-y-3">
                 <h2 className="font-brand font-bold text-base text-[#0A0A0A] flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-[#15803D]" />
+                  <ShieldCheck className="w-4 h-4 text-[#15803D] shrink-0" />
                   <span>Segurança e Zero Métricas Fictícias</span>
                 </h2>
                 <p className="text-[#525252] leading-relaxed">

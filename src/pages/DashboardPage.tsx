@@ -111,14 +111,14 @@ export const DashboardPage: React.FC = () => {
             Indicadores reais sincronizados com PostgreSQL no Supabase em Kwanzas (Kz)
           </p>
         </div>
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-2">
           <PeriodFilterBar value={periodFilter} onChange={setPeriodFilter} />
           <button
             type="button"
             onClick={() => void reloadData()}
             disabled={isDataLoading}
             aria-label="Atualizar dados do painel"
-            className="px-3 py-2 bg-white border border-[#E5E5E5] rounded-[10px] text-xs font-medium text-[#0A0A0A] hover:bg-[#F4F4F4] inline-flex items-center gap-1.5 whitespace-nowrap disabled:opacity-50"
+            className="min-h-[44px] sm:min-h-0 px-3 py-2 bg-white border border-[#E5E5E5] rounded-[10px] text-xs font-medium text-[#0A0A0A] hover:bg-[#F4F4F4] inline-flex items-center justify-center gap-1.5 whitespace-nowrap disabled:opacity-50"
           >
             <RefreshCw className={`w-3.5 h-3.5 text-[#FF8A00] ${isDataLoading ? 'animate-spin' : ''}`} />
             <span>Atualizar</span>
@@ -131,11 +131,11 @@ export const DashboardPage: React.FC = () => {
           role="alert"
           className="bg-[#FEF2F2] border border-[#FECACA] text-[#B91C1C] rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
         >
-          <span>{dataError}</span>
+          <span className="break-words">{dataError}</span>
           <button
             type="button"
             onClick={() => void reloadData()}
-            className="px-3 py-1.5 bg-white border border-[#FECACA] rounded-lg font-semibold text-[#B91C1C] whitespace-nowrap self-start sm:self-auto"
+            className="min-h-[44px] sm:min-h-0 px-3 py-1.5 bg-white border border-[#FECACA] rounded-lg font-semibold text-[#B91C1C] inline-flex items-center justify-center whitespace-nowrap self-stretch sm:self-auto"
           >
             Tentar novamente
           </button>
@@ -267,7 +267,7 @@ export const DashboardPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setActiveModule('crm')}
-                className="text-xs font-semibold text-[#0A0A0A] hover:text-[#FF8A00] inline-flex items-center gap-1 whitespace-nowrap self-start sm:self-auto"
+                className="min-h-[44px] sm:min-h-0 text-xs font-semibold text-[#0A0A0A] hover:text-[#FF8A00] inline-flex items-center gap-1 whitespace-nowrap self-start sm:self-auto"
               >
                 <span>Abrir tarefas no CRM</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -277,8 +277,8 @@ export const DashboardPage: React.FC = () => {
 
           {/* Charts: Sales by Period + Order Evolution */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2 bg-white border border-[#E5E5E5] rounded-xl p-5">
-              <div className="flex items-center justify-between gap-2 mb-4">
+            <div className="lg:col-span-2 bg-white border border-[#E5E5E5] rounded-xl p-4 sm:p-5 overflow-hidden">
+              <div className="flex flex-wrap items-start sm:items-center justify-between gap-2 mb-4">
                 <div>
                   <h2 className="font-brand font-bold text-base text-[#0A0A0A]">
                     Vendas Confirmadas por Data
@@ -290,7 +290,7 @@ export const DashboardPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setActiveModule('reports')}
-                  className="text-xs font-medium text-[#0A0A0A] hover:text-[#FF8A00] inline-flex items-center gap-1 whitespace-nowrap"
+                  className="min-h-[44px] sm:min-h-0 text-xs font-medium text-[#0A0A0A] hover:text-[#FF8A00] inline-flex items-center gap-1 whitespace-nowrap"
                 >
                   <span>Relatórios detalhados</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -302,12 +302,12 @@ export const DashboardPage: React.FC = () => {
                   Sem encomendas registadas no intervalo de datas selecionado.
                 </p>
               ) : (
-                <div className="pt-2">
+                <div className="pt-2 overflow-x-auto">
                   <svg
                     viewBox="0 0 640 210"
                     role="img"
                     aria-label="Gráfico de barras de vendas confirmadas por data em Kwanzas"
-                    className="w-full h-52 overflow-visible"
+                    className="w-full min-w-[300px] h-48 sm:h-52 overflow-hidden"
                   >
                     {[0, 0.5, 1].map((ratio, idx) => {
                       const y = 170 - ratio * 140;
@@ -469,12 +469,12 @@ export const DashboardPage: React.FC = () => {
                 </div>
               </div>
 
-              <div className="pt-4 mt-5 border-t border-[#E5E5E5] flex items-center justify-between text-xs">
+              <div className="pt-4 mt-5 border-t border-[#E5E5E5] flex items-center justify-between gap-2 text-xs">
                 <span className="text-[#525252]">Clientes registados</span>
                 <button
                   type="button"
                   onClick={() => setActiveModule('customers')}
-                  className="font-semibold text-[#0A0A0A] hover:text-[#FF8A00] inline-flex items-center gap-1"
+                  className="min-h-[44px] sm:min-h-0 font-semibold text-[#0A0A0A] hover:text-[#FF8A00] inline-flex items-center gap-1 whitespace-nowrap"
                 >
                   <Users className="w-3.5 h-3.5 text-[#FF8A00]" />
                   <span>{metrics.totalCustomers} contactos</span>
@@ -485,8 +485,8 @@ export const DashboardPage: React.FC = () => {
 
           {/* Bottom Row: Top Products + Low Stock & Recent Activity */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="bg-white border border-[#E5E5E5] rounded-xl p-5 space-y-5">
-              <div className="flex items-center justify-between">
+            <div className="bg-white border border-[#E5E5E5] rounded-xl p-4 sm:p-5 space-y-5">
+              <div className="flex flex-wrap items-start sm:items-center justify-between gap-2">
                 <div>
                   <h2 className="font-brand font-bold text-base text-[#0A0A0A]">
                     Produtos Mais Vendidos (Confirmados)
@@ -498,7 +498,7 @@ export const DashboardPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setActiveModule('products')}
-                  className="text-xs font-medium text-[#0A0A0A] hover:text-[#FF8A00]"
+                  className="min-h-[44px] sm:min-h-0 text-xs font-medium text-[#0A0A0A] hover:text-[#FF8A00] inline-flex items-center whitespace-nowrap"
                 >
                   Gerir produtos
                 </button>
@@ -511,9 +511,9 @@ export const DashboardPage: React.FC = () => {
               ) : (
                 <div className="divide-y divide-[#E5E5E5]">
                   {metrics.topProducts.slice(0, 4).map((tp) => (
-                    <div key={tp.productId} className="py-3 flex items-center justify-between gap-4 text-xs">
+                    <div key={tp.productId} className="py-3 flex items-center justify-between gap-3 text-xs">
                       <div className="min-w-0">
-                        <p className="font-semibold text-[#0A0A0A] truncate">{tp.productName}</p>
+                        <p className="font-semibold text-[#0A0A0A] break-words">{tp.productName}</p>
                         <p className="text-[#525252] font-mono text-[11px]">{tp.sku}</p>
                       </div>
                       <div className="text-right shrink-0 tabular-data">
@@ -530,19 +530,19 @@ export const DashboardPage: React.FC = () => {
               {metrics.lowStockProducts.length > 0 && (
                 <div className="pt-4 border-t border-[#E5E5E5]">
                   <p className="font-brand font-bold text-xs text-[#B91C1C] flex items-center gap-1.5 mb-2.5">
-                    <AlertTriangle className="w-3.5 h-3.5" />
+                    <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
                     <span>Produtos ativos com stock baixo</span>
                   </p>
-                  <div className="space-y-2">
+                  <div className="space-y-1.5">
                     {metrics.lowStockProducts.map((p) => (
-                      <div key={p.id} className="flex items-center justify-between text-xs">
+                      <div key={p.id} className="flex items-center justify-between gap-2 text-xs">
                         <button
                           type="button"
                           onClick={() => {
                             setFocusedEntityId(p.id);
                             setActiveModule('products');
                           }}
-                          className="text-left font-medium text-[#0A0A0A] hover:text-[#FF8A00] truncate"
+                          className="min-h-[44px] sm:min-h-0 text-left font-medium text-[#0A0A0A] hover:text-[#FF8A00] break-words inline-flex items-center"
                         >
                           {p.name}
                         </button>
@@ -557,8 +557,8 @@ export const DashboardPage: React.FC = () => {
             </div>
 
             {/* Atividades administrativas recentes */}
-            <div className="bg-white border border-[#E5E5E5] rounded-xl p-5">
-              <div className="flex items-center justify-between mb-4">
+            <div className="bg-white border border-[#E5E5E5] rounded-xl p-4 sm:p-5">
+              <div className="flex flex-wrap items-start sm:items-center justify-between gap-2 mb-4">
                 <div>
                   <h2 className="font-brand font-bold text-base text-[#0A0A0A]">
                     Atividades Administrativas Recentes
@@ -570,7 +570,7 @@ export const DashboardPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setActiveModule('users')}
-                  className="text-xs font-medium text-[#0A0A0A] hover:text-[#FF8A00]"
+                  className="min-h-[44px] sm:min-h-0 text-xs font-medium text-[#0A0A0A] hover:text-[#FF8A00] inline-flex items-center whitespace-nowrap"
                 >
                   Ver auditoria
                 </button>
@@ -584,14 +584,14 @@ export const DashboardPage: React.FC = () => {
                 <div className="divide-y divide-[#E5E5E5]">
                   {snapshot.activityLogs.slice(0, 5).map((log) => (
                     <div key={log.id} className="py-3 text-xs">
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="font-semibold text-[#0A0A0A]">{log.action}</span>
+                      <div className="flex flex-wrap items-center justify-between gap-1.5">
+                        <span className="font-semibold text-[#0A0A0A] break-words">{log.action}</span>
                         <span className="text-[11px] text-[#737373] tabular-data shrink-0">
                           {formatDateTimePt(log.createdAt)}
                         </span>
                       </div>
-                      <p className="text-[#525252] mt-0.5 leading-relaxed">{log.details}</p>
-                      <p className="text-[11px] text-[#737373] mt-1">
+                      <p className="text-[#525252] mt-0.5 leading-relaxed break-words">{log.details}</p>
+                      <p className="text-[11px] text-[#737373] mt-1 break-words">
                         {log.actorName} · {getRoleLabel(log.actorRole)} · Ref: {log.entityRef}
                       </p>
                     </div>

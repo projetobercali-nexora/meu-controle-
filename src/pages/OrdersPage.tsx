@@ -310,7 +310,7 @@ export const OrdersPage: React.FC = () => {
                 : undefined
             }
             onClick={openCreateModal}
-            className="btn-bercali-primary px-4 py-2.5 rounded-[10px] text-xs inline-flex items-center gap-2 whitespace-nowrap shrink-0 disabled:opacity-50"
+            className="btn-bercali-primary min-h-[44px] sm:min-h-0 px-4 py-2.5 rounded-[10px] text-xs inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0 w-full sm:w-auto disabled:opacity-50"
           >
             <Plus className="w-4 h-4" />
             <span>Registar Encomenda</span>
@@ -328,7 +328,7 @@ export const OrdersPage: React.FC = () => {
 
       {/* Filters */}
       <div className="bg-white border border-[#E5E5E5] rounded-xl p-4 flex flex-col lg:flex-row lg:items-center justify-between gap-3">
-        <div className="relative flex-1 max-w-sm">
+        <div className="relative flex-1 lg:max-w-sm">
           <Search className="w-4 h-4 text-[#737373] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
           <input
             type="search"
@@ -339,11 +339,11 @@ export const OrdersPage: React.FC = () => {
             }}
             aria-label="Pesquisar encomendas por código, cliente ou telefone"
             placeholder="Código (BRC...), cliente ou telefone..."
-            className="w-full pl-9 pr-3 py-2 text-xs bg-[#F4F4F4] border border-transparent focus:bg-white focus:border-[#FF8A00] focus:outline-none rounded-[10px]"
+            className="w-full min-h-[44px] sm:min-h-0 pl-9 pr-3 py-2 text-xs bg-[#F4F4F4] border border-transparent focus:bg-white focus:border-[#FF8A00] focus:outline-none rounded-[10px]"
           />
         </div>
 
-        <div className="flex flex-wrap items-center gap-2.5">
+        <div className="grid grid-cols-1 sm:flex sm:flex-wrap items-stretch sm:items-center gap-2.5">
           <select
             aria-label="Filtrar por estado da encomenda"
             value={statusFilter}
@@ -351,7 +351,7 @@ export const OrdersPage: React.FC = () => {
               setStatusFilter(e.target.value as 'all' | OrderStatus);
               setPage(1);
             }}
-            className="px-3 py-2 text-xs bg-white border border-[#D4D4D4] rounded-[10px]"
+            className="min-h-[44px] sm:min-h-0 px-3 py-2 text-xs bg-white border border-[#D4D4D4] rounded-[10px] w-full sm:w-auto"
           >
             <option value="all">Todos os estados</option>
             {(Object.keys(ORDER_STATUS_META) as OrderStatus[]).map((st) => (
@@ -368,7 +368,7 @@ export const OrdersPage: React.FC = () => {
               setPaymentFilter(e.target.value as 'all' | PaymentStatus);
               setPage(1);
             }}
-            className="px-3 py-2 text-xs bg-white border border-[#D4D4D4] rounded-[10px]"
+            className="min-h-[44px] sm:min-h-0 px-3 py-2 text-xs bg-white border border-[#D4D4D4] rounded-[10px] w-full sm:w-auto"
           >
             <option value="all">Todos os pagamentos</option>
             {(Object.keys(PAYMENT_STATUS_META) as PaymentStatus[]).map((ps) => (
@@ -385,7 +385,7 @@ export const OrdersPage: React.FC = () => {
               setOriginFilter(e.target.value as 'all' | OrderOrigin);
               setPage(1);
             }}
-            className="px-3 py-2 text-xs bg-white border border-[#D4D4D4] rounded-[10px]"
+            className="min-h-[44px] sm:min-h-0 px-3 py-2 text-xs bg-white border border-[#D4D4D4] rounded-[10px] w-full sm:w-auto"
           >
             <option value="all">Todas as origens</option>
             {(Object.keys(ORDER_ORIGIN_LABELS) as OrderOrigin[]).map((orig) => (
@@ -431,7 +431,50 @@ export const OrdersPage: React.FC = () => {
         <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
           {/* Orders Table */}
           <div className="xl:col-span-7 bg-white border border-[#E5E5E5] rounded-xl overflow-hidden">
-            <div className="overflow-x-auto">
+            {/* Mobile Stacked Cards (< md) */}
+            <div className="md:hidden divide-y divide-[#E5E5E5] text-xs">
+              {paginated.map((ord) => {
+                const active = selectedOrder?.id === ord.id;
+                return (
+                  <button
+                    key={ord.id}
+                    type="button"
+                    onClick={() => setSelectedOrderId(ord.id)}
+                    className={`w-full text-left p-4 space-y-2.5 transition-colors ${
+                      active ? 'bg-[#FFF8EB]' : 'hover:bg-[#FAFAFA]'
+                    }`}
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <p className="font-mono font-bold text-[#0A0A0A] break-words">
+                          {ord.code}
+                        </p>
+                        <p className="text-[11px] text-[#737373] tabular-data mt-0.5">
+                          {formatDateTimePt(ord.createdAt)} · {ORDER_ORIGIN_LABELS[ord.origin]}
+                        </p>
+                      </div>
+                      <span className="metric-num font-bold text-sm text-[#0A0A0A] shrink-0">
+                        {formatKwanza(ord.totalKz)}
+                      </span>
+                    </div>
+
+                    <div className="break-words">
+                      <p className="font-medium text-[#0A0A0A]">{ord.customerName}</p>
+                      <p className="font-mono text-[11px] text-[#525252]">{ord.customerPhone}</p>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-2 pt-1.5 border-t border-[#F4F4F4]">
+                      <OrderStatusInline status={ord.status} />
+                      <span className="text-[#D4D4D4]" aria-hidden="true">·</span>
+                      <PaymentStatusInline status={ord.paymentStatus} />
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Desktop Table (md+) */}
+            <div className="hidden md:block overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="border-b border-[#E5E5E5] bg-[#FAFAFA] text-[11px] font-semibold text-[#525252]">
@@ -483,16 +526,16 @@ export const OrdersPage: React.FC = () => {
               </table>
             </div>
 
-            <div className="px-4 py-3 border-t border-[#E5E5E5] flex items-center justify-between text-xs text-[#525252]">
+            <div className="px-4 py-3 border-t border-[#E5E5E5] flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs text-[#525252]">
               <span className="tabular-data">
                 Página {safePage} de {totalPages} ({filteredOrders.length} encomenda(s))
               </span>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center justify-between sm:justify-end gap-2">
                 <button
                   type="button"
                   disabled={safePage <= 1}
                   onClick={() => setPage((p) => Math.max(1, p - 1))}
-                  className="px-3 py-1 rounded-lg border border-[#D4D4D4] disabled:opacity-40"
+                  className="min-h-[44px] sm:min-h-0 px-3 py-1.5 rounded-lg border border-[#D4D4D4] text-[#0A0A0A] hover:bg-[#F4F4F4] disabled:opacity-40"
                 >
                   Anterior
                 </button>
@@ -500,7 +543,7 @@ export const OrdersPage: React.FC = () => {
                   type="button"
                   disabled={safePage >= totalPages}
                   onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                  className="px-3 py-1 rounded-lg border border-[#D4D4D4] disabled:opacity-40"
+                  className="min-h-[44px] sm:min-h-0 px-3 py-1.5 rounded-lg border border-[#D4D4D4] text-[#0A0A0A] hover:bg-[#F4F4F4] disabled:opacity-40"
                 >
                   Seguinte
                 </button>
@@ -510,18 +553,18 @@ export const OrdersPage: React.FC = () => {
 
           {/* Order Detail & Manual Attendance Panel */}
           {selectedOrder && (
-            <div className="xl:col-span-5 bg-white border border-[#E5E5E5] rounded-xl p-5 space-y-5 text-xs">
-              <div className="flex items-start justify-between gap-2 pb-4 border-b border-[#E5E5E5]">
-                <div>
-                  <span className="font-mono font-bold text-sm text-[#0A0A0A]">
+            <div className="xl:col-span-5 bg-white border border-[#E5E5E5] rounded-xl p-4 sm:p-5 space-y-5 text-xs">
+              <div className="flex flex-wrap items-start justify-between gap-2 pb-4 border-b border-[#E5E5E5]">
+                <div className="min-w-0">
+                  <span className="font-mono font-bold text-sm text-[#0A0A0A] break-words">
                     {selectedOrder.code}
                   </span>
-                  <p className="text-[#525252] mt-0.5">
+                  <p className="text-[#525252] mt-0.5 break-words">
                     {selectedOrder.customerName} ·{' '}
                     <span className="font-mono">{selectedOrder.customerPhone}</span>
                   </p>
                 </div>
-                <div className="flex flex-col items-end gap-1">
+                <div className="flex flex-col sm:items-end gap-1">
                   <OrderStatusInline status={selectedOrder.status} />
                   <PaymentStatusInline status={selectedOrder.paymentStatus} />
                 </div>
@@ -545,7 +588,7 @@ export const OrdersPage: React.FC = () => {
                 </div>
                 <div className="sm:col-span-2">
                   <p className="text-[11px] text-[#525252]">Endereço / Informações de entrega</p>
-                  <p className="font-medium text-[#0A0A0A] mt-0.5">
+                  <p className="font-medium text-[#0A0A0A] mt-0.5 break-words">
                     {selectedOrder.deliveryAddress || 'Morada não indicada'}
                   </p>
                 </div>
@@ -558,10 +601,10 @@ export const OrdersPage: React.FC = () => {
                 </p>
                 <div className="border border-[#E5E5E5] rounded-[10px] divide-y divide-[#E5E5E5]">
                   {selectedOrder.items.map((it) => (
-                    <div key={it.id} className="p-3 flex items-center justify-between gap-3">
+                    <div key={it.id} className="p-3 flex items-start sm:items-center justify-between gap-3">
                       <div className="min-w-0">
-                        <p className="font-medium text-[#0A0A0A] truncate">{it.productName}</p>
-                        <p className="text-[11px] text-[#525252] font-mono">
+                        <p className="font-medium text-[#0A0A0A] break-words">{it.productName}</p>
+                        <p className="text-[11px] text-[#525252] font-mono break-words">
                           {it.sku} · {it.quantity} × {formatKwanza(it.unitPriceKz)}
                         </p>
                       </div>
@@ -571,21 +614,21 @@ export const OrdersPage: React.FC = () => {
                     </div>
                   ))}
                   <div className="p-3 bg-[#FAFAFA] space-y-1">
-                    <div className="flex justify-between text-[#525252]">
+                    <div className="flex justify-between gap-2 text-[#525252]">
                       <span>Subtotal</span>
                       <span className="tabular-data">{formatKwanza(selectedOrder.subtotalKz)}</span>
                     </div>
-                    <div className="flex justify-between text-[#525252]">
+                    <div className="flex justify-between gap-2 text-[#525252]">
                       <span>Taxa de entrega</span>
                       <span className="tabular-data">{formatKwanza(selectedOrder.deliveryFeeKz)}</span>
                     </div>
                     {selectedOrder.discountKz > 0 && (
-                      <div className="flex justify-between text-[#15803D]">
+                      <div className="flex justify-between gap-2 text-[#15803D]">
                         <span>Desconto comercial</span>
                         <span className="tabular-data">-{formatKwanza(selectedOrder.discountKz)}</span>
                       </div>
                     )}
-                    <div className="flex justify-between font-brand font-bold text-sm text-[#0A0A0A] pt-1 border-t border-[#E5E5E5]">
+                    <div className="flex justify-between gap-2 font-brand font-bold text-sm text-[#0A0A0A] pt-1 border-t border-[#E5E5E5]">
                       <span>Total da encomenda</span>
                       <span className="metric-num">{formatKwanza(selectedOrder.totalKz)}</span>
                     </div>
@@ -613,7 +656,7 @@ export const OrdersPage: React.FC = () => {
                       onChange={(e) =>
                         setEditOutcome(e.target.value as WhatsAppAttendanceOutcome)
                       }
-                      className="w-full px-3 py-2 border border-[#D4D4D4] rounded-lg bg-white"
+                      className="w-full min-h-[44px] sm:min-h-0 px-3 py-2 border border-[#D4D4D4] rounded-lg bg-white"
                     >
                       {(Object.keys(WHATSAPP_OUTCOME_LABELS) as WhatsAppAttendanceOutcome[]).map(
                         (k) => (
@@ -634,7 +677,7 @@ export const OrdersPage: React.FC = () => {
                         id="ord-status-select"
                         value={editStatus}
                         onChange={(e) => setEditStatus(e.target.value as OrderStatus)}
-                        className="w-full px-3 py-2 border border-[#D4D4D4] rounded-lg bg-white"
+                        className="w-full min-h-[44px] sm:min-h-0 px-3 py-2 border border-[#D4D4D4] rounded-lg bg-white"
                       >
                         {(Object.keys(ORDER_STATUS_META) as OrderStatus[]).map((st) => (
                           <option key={st} value={st}>
@@ -652,7 +695,7 @@ export const OrdersPage: React.FC = () => {
                         id="ord-payment-select"
                         value={editPaymentStatus}
                         onChange={(e) => setEditPaymentStatus(e.target.value as PaymentStatus)}
-                        className="w-full px-3 py-2 border border-[#D4D4D4] rounded-lg bg-white"
+                        className="w-full min-h-[44px] sm:min-h-0 px-3 py-2 border border-[#D4D4D4] rounded-lg bg-white"
                       >
                         {(Object.keys(PAYMENT_STATUS_META) as PaymentStatus[]).map((ps) => (
                           <option key={ps} value={ps}>
@@ -673,7 +716,7 @@ export const OrdersPage: React.FC = () => {
                       value={transitionNote}
                       onChange={(e) => setTransitionNote(e.target.value)}
                       placeholder="Ex.: Pagamento por transferência validado e entrega agendada"
-                      className="w-full px-3 py-2 border border-[#D4D4D4] rounded-lg"
+                      className="w-full min-h-[44px] sm:min-h-0 px-3 py-2 border border-[#D4D4D4] rounded-lg"
                     />
                   </div>
 
@@ -691,7 +734,7 @@ export const OrdersPage: React.FC = () => {
                   </div>
 
                   {detailError && (
-                    <div role="alert" className="p-3 rounded-lg bg-[#FEF2F2] border border-[#FECACA] text-[#B91C1C]">
+                    <div role="alert" className="p-3 rounded-lg bg-[#FEF2F2] border border-[#FECACA] text-[#B91C1C] break-words">
                       {detailError}
                     </div>
                   )}
@@ -699,7 +742,7 @@ export const OrdersPage: React.FC = () => {
                   <button
                     type="submit"
                     disabled={isUpdatingOrder || isMutating}
-                    className="btn-bercali-primary w-full py-2.5 px-4 rounded-[10px] text-xs disabled:opacity-50"
+                    className="btn-bercali-primary min-h-[44px] sm:min-h-0 w-full py-2.5 px-4 rounded-[10px] text-xs disabled:opacity-50"
                   >
                     {isUpdatingOrder ? 'A guardar...' : 'Guardar Estado, Pagamento e CRM'}
                   </button>
@@ -713,25 +756,25 @@ export const OrdersPage: React.FC = () => {
               {/* Status History */}
               <div className="pt-3 border-t border-[#E5E5E5]">
                 <p className="font-brand font-bold text-xs text-[#0A0A0A] flex items-center gap-1.5 mb-2.5">
-                  <History className="w-3.5 h-3.5 text-[#FF8A00]" />
+                  <History className="w-3.5 h-3.5 text-[#FF8A00] shrink-0" />
                   <span>Histórico de alterações de estado</span>
                 </p>
                 <div className="space-y-2.5 max-h-48 overflow-y-auto">
                   {selectedOrder.statusHistory.map((h) => (
                     <div key={h.id} className="p-2.5 rounded-lg bg-[#F4F4F4]">
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="font-semibold text-[#0A0A0A]">
+                      <div className="flex flex-wrap items-center justify-between gap-1.5">
+                        <span className="font-semibold text-[#0A0A0A] break-words">
                           {h.fromStatus && ORDER_STATUS_META[h.fromStatus]
                             ? `${ORDER_STATUS_META[h.fromStatus].label} -> `
                             : ''}
                           {ORDER_STATUS_META[h.toStatus]?.label || h.toStatus}
                         </span>
-                        <span className="text-[10px] text-[#737373] tabular-data">
+                        <span className="text-[10px] text-[#737373] tabular-data shrink-0">
                           {formatDateTimePt(h.changedAt)}
                         </span>
                       </div>
-                      <p className="text-[#525252] mt-0.5">{h.note}</p>
-                      <p className="text-[10px] text-[#737373] mt-0.5">Por: {h.changedBy}</p>
+                      <p className="text-[#525252] mt-0.5 break-words">{h.note}</p>
+                      <p className="text-[10px] text-[#737373] mt-0.5 break-words">Por: {h.changedBy}</p>
                     </div>
                   ))}
                 </div>
@@ -744,15 +787,20 @@ export const OrdersPage: React.FC = () => {
       {/* Manual Order Modal */}
       {createOpen && (
         <div
-          className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4 overflow-y-auto"
+          className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-3 sm:p-4 pt-safe pb-safe"
           role="dialog"
           aria-modal="true"
           aria-labelledby="manual-order-title"
+          onClick={(e) => {
+            if (e.target === e.currentTarget && !isCreatingOrder) {
+              setCreateOpen(false);
+            }
+          }}
         >
-          <div className="bg-white rounded-xl border border-[#E5E5E5] max-w-xl w-full p-6 my-8 max-h-[92vh] overflow-y-auto">
-            <div className="flex items-center justify-between pb-3 mb-4 border-b border-[#E5E5E5]">
-              <div>
-                <h2 id="manual-order-title" className="font-brand font-bold text-lg text-[#0A0A0A]">
+          <div className="bg-white rounded-xl border border-[#E5E5E5] max-w-xl w-full max-h-[90dvh] flex flex-col overflow-hidden">
+            <div className="shrink-0 flex items-center justify-between gap-3 px-4 sm:px-6 py-4 border-b border-[#E5E5E5]">
+              <div className="min-w-0">
+                <h2 id="manual-order-title" className="font-brand font-bold text-base sm:text-lg text-[#0A0A0A]">
                   Registar Encomenda
                 </h2>
                 <p className="text-xs text-[#525252]">
@@ -764,333 +812,338 @@ export const OrdersPage: React.FC = () => {
                 disabled={isCreatingOrder}
                 onClick={() => setCreateOpen(false)}
                 aria-label="Fechar janela"
-                className="p-1.5 rounded-lg hover:bg-[#F4F4F4]"
+                className="min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 p-2 rounded-lg hover:bg-[#F4F4F4] inline-flex items-center justify-center shrink-0"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            <form onSubmit={(e) => void handleCreateOrder(e)} className="space-y-4 text-xs">
-              {/* Customer mode switch */}
-              <div className="space-y-2.5">
-                <div className="flex items-center justify-between">
-                  <span className="font-semibold text-[#0A0A0A]">Identificação do Cliente *</span>
-                  {snapshot.customers.length > 0 && (
-                    <div className="inline-flex p-0.5 bg-[#F4F4F4] rounded-lg">
-                      <button
-                        type="button"
-                        onClick={() => setCustomerMode('existing')}
-                        className={`px-2.5 py-1 rounded-md font-medium ${
-                          customerMode === 'existing'
-                            ? 'bg-white text-[#0A0A0A] shadow-xs'
-                            : 'text-[#525252]'
-                        }`}
-                      >
-                        Cliente existente
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setCustomerMode('new')}
-                        className={`px-2.5 py-1 rounded-md font-medium ${
-                          customerMode === 'new'
-                            ? 'bg-white text-[#0A0A0A] shadow-xs'
-                            : 'text-[#525252]'
-                        }`}
-                      >
-                        Novo contacto / Telefone
-                      </button>
-                    </div>
-                  )}
-                </div>
-
-                {customerMode === 'existing' && snapshot.customers.length > 0 ? (
-                  <div>
-                    <label htmlFor="mo-cust" className="sr-only">
-                      Selecionar cliente existente
-                    </label>
-                    <select
-                      id="mo-cust"
-                      value={newCustomerId}
-                      onChange={(e) => setNewCustomerId(e.target.value)}
-                      className="w-full px-3 py-2 border border-[#D4D4D4] rounded-lg bg-white"
-                    >
-                      {snapshot.customers.map((c) => (
-                        <option key={c.id} value={c.id}>
-                          {c.name} ({c.phoneNormalized})
-                        </option>
-                      ))}
-                    </select>
+            <form
+              onSubmit={(e) => void handleCreateOrder(e)}
+              className="flex flex-col flex-1 min-h-0 text-xs"
+            >
+              <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-4 sm:p-6 space-y-4">
+                {/* Customer mode switch */}
+                <div className="space-y-2.5">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <span className="font-semibold text-[#0A0A0A]">Identificação do Cliente *</span>
+                    {snapshot.customers.length > 0 && (
+                      <div className="inline-flex flex-wrap p-0.5 bg-[#F4F4F4] rounded-lg">
+                        <button
+                          type="button"
+                          onClick={() => setCustomerMode('existing')}
+                          className={`min-h-[38px] sm:min-h-0 px-2.5 py-1 rounded-md font-medium ${
+                            customerMode === 'existing'
+                              ? 'bg-white text-[#0A0A0A] shadow-xs'
+                              : 'text-[#525252]'
+                          }`}
+                        >
+                          Cliente existente
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setCustomerMode('new')}
+                          className={`min-h-[38px] sm:min-h-0 px-2.5 py-1 rounded-md font-medium ${
+                            customerMode === 'new'
+                              ? 'bg-white text-[#0A0A0A] shadow-xs'
+                              : 'text-[#525252]'
+                          }`}
+                        >
+                          Novo contacto / Telefone
+                        </button>
+                      </div>
+                    )}
                   </div>
-                ) : (
-                  <div className="p-3.5 rounded-[10px] bg-[#F4F4F4] grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                      <label htmlFor="mo-cust-name" className="block text-[#525252] mb-1">
-                        Nome completo *
-                      </label>
-                      <input
-                        id="mo-cust-name"
-                        type="text"
-                        value={newCustName}
-                        onChange={(e) => setNewCustName(e.target.value)}
-                        placeholder="Ex.: Mateus Kiala"
-                        className="w-full px-3 py-2 bg-white border border-[#D4D4D4] rounded-lg"
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="mo-cust-phone" className="block text-[#525252] mb-1">
-                        Telefone / WhatsApp *
-                      </label>
-                      <input
-                        id="mo-cust-phone"
-                        type="tel"
-                        value={newCustPhone}
-                        onChange={(e) => setNewCustPhone(e.target.value)}
-                        placeholder="+244 923 000 000"
-                        className="w-full px-3 py-2 bg-white font-mono border border-[#D4D4D4] rounded-lg"
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="mo-cust-city" className="block text-[#525252] mb-1">
-                        Cidade / Bairro
-                      </label>
-                      <input
-                        id="mo-cust-city"
-                        type="text"
-                        value={newCustCity}
-                        onChange={(e) => setNewCustCity(e.target.value)}
-                        className="w-full px-3 py-2 bg-white border border-[#D4D4D4] rounded-lg"
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="mo-cust-email" className="block text-[#525252] mb-1">
-                        Email (opcional)
-                      </label>
-                      <input
-                        id="mo-cust-email"
-                        type="email"
-                        value={newCustEmail}
-                        onChange={(e) => setNewCustEmail(e.target.value)}
-                        placeholder="cliente@exemplo.ao"
-                        className="w-full px-3 py-2 bg-white border border-[#D4D4D4] rounded-lg"
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
 
-              {/* Multi-item lines */}
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="font-semibold text-[#0A0A0A]">Itens da Encomenda *</span>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setDraftLines((prev) => [
-                        ...prev,
-                        {
-                          lineId: `ln-${Date.now()}-${prev.length}`,
-                          productId: availableProducts[0]?.id || '',
-                          quantity: '1',
-                        },
-                      ])
-                    }
-                    className="text-xs font-semibold text-[#FF8A00] hover:underline inline-flex items-center gap-1"
-                  >
-                    <Plus className="w-3.5 h-3.5" />
-                    <span>Adicionar artigo</span>
-                  </button>
-                </div>
-
-                {draftLines.map((ln, idx) => (
-                  <div key={ln.lineId} className="grid grid-cols-12 gap-2 items-center">
-                    <div className="col-span-8">
+                  {customerMode === 'existing' && snapshot.customers.length > 0 ? (
+                    <div>
+                      <label htmlFor="mo-cust" className="sr-only">
+                        Selecionar cliente existente
+                      </label>
                       <select
-                        aria-label={`Produto da linha ${idx + 1}`}
-                        value={ln.productId}
-                        onChange={(e) =>
-                          setDraftLines((prev) =>
-                            prev.map((x) =>
-                              x.lineId === ln.lineId ? { ...x, productId: e.target.value } : x
-                            )
-                          )
-                        }
-                        className="w-full px-3 py-2 border border-[#D4D4D4] rounded-lg bg-white"
+                        id="mo-cust"
+                        value={newCustomerId}
+                        onChange={(e) => setNewCustomerId(e.target.value)}
+                        className="w-full min-h-[44px] sm:min-h-0 px-3 py-2 border border-[#D4D4D4] rounded-lg bg-white"
                       >
-                        {availableProducts.map((p) => (
-                          <option key={p.id} value={p.id}>
-                            {p.name} — {formatKwanza(p.promoPriceKz ?? p.priceKz)}
+                        {snapshot.customers.map((c) => (
+                          <option key={c.id} value={c.id}>
+                            {c.name} ({c.phoneNormalized})
                           </option>
                         ))}
                       </select>
                     </div>
-                    <div className="col-span-3">
-                      <input
-                        aria-label={`Quantidade da linha ${idx + 1}`}
-                        type="number"
-                        min="1"
-                        value={ln.quantity}
-                        onChange={(e) =>
-                          setDraftLines((prev) =>
-                            prev.map((x) =>
-                              x.lineId === ln.lineId ? { ...x, quantity: e.target.value } : x
-                            )
-                          )
-                        }
-                        className="w-full px-3 py-2 border border-[#D4D4D4] rounded-lg tabular-data"
-                      />
+                  ) : (
+                    <div className="p-3.5 rounded-[10px] bg-[#F4F4F4] grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <label htmlFor="mo-cust-name" className="block text-[#525252] mb-1">
+                          Nome completo *
+                        </label>
+                        <input
+                          id="mo-cust-name"
+                          type="text"
+                          value={newCustName}
+                          onChange={(e) => setNewCustName(e.target.value)}
+                          placeholder="Ex.: Mateus Kiala"
+                          className="w-full min-h-[44px] sm:min-h-0 px-3 py-2 bg-white border border-[#D4D4D4] rounded-lg"
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="mo-cust-phone" className="block text-[#525252] mb-1">
+                          Telefone / WhatsApp *
+                        </label>
+                        <input
+                          id="mo-cust-phone"
+                          type="tel"
+                          value={newCustPhone}
+                          onChange={(e) => setNewCustPhone(e.target.value)}
+                          placeholder="+244 923 000 000"
+                          className="w-full min-h-[44px] sm:min-h-0 px-3 py-2 bg-white font-mono border border-[#D4D4D4] rounded-lg"
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="mo-cust-city" className="block text-[#525252] mb-1">
+                          Cidade / Bairro
+                        </label>
+                        <input
+                          id="mo-cust-city"
+                          type="text"
+                          value={newCustCity}
+                          onChange={(e) => setNewCustCity(e.target.value)}
+                          className="w-full min-h-[44px] sm:min-h-0 px-3 py-2 bg-white border border-[#D4D4D4] rounded-lg"
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="mo-cust-email" className="block text-[#525252] mb-1">
+                          Email (opcional)
+                        </label>
+                        <input
+                          id="mo-cust-email"
+                          type="email"
+                          value={newCustEmail}
+                          onChange={(e) => setNewCustEmail(e.target.value)}
+                          placeholder="cliente@exemplo.ao"
+                          className="w-full min-h-[44px] sm:min-h-0 px-3 py-2 bg-white border border-[#D4D4D4] rounded-lg"
+                        />
+                      </div>
                     </div>
-                    <div className="col-span-1 text-right">
-                      {draftLines.length > 1 && (
-                        <button
-                          type="button"
-                          onClick={() =>
-                            setDraftLines((prev) => prev.filter((x) => x.lineId !== ln.lineId))
+                  )}
+                </div>
+
+                {/* Multi-item lines */}
+                <div className="space-y-2.5">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-semibold text-[#0A0A0A]">Itens da Encomenda *</span>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setDraftLines((prev) => [
+                          ...prev,
+                          {
+                            lineId: `ln-${Date.now()}-${prev.length}`,
+                            productId: availableProducts[0]?.id || '',
+                            quantity: '1',
+                          },
+                        ])
+                      }
+                      className="min-h-[38px] sm:min-h-0 text-xs font-semibold text-[#FF8A00] hover:underline inline-flex items-center gap-1 whitespace-nowrap"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                      <span>Adicionar artigo</span>
+                    </button>
+                  </div>
+
+                  {draftLines.map((ln, idx) => (
+                    <div key={ln.lineId} className="grid grid-cols-12 gap-2 items-center">
+                      <div className="col-span-12 sm:col-span-8">
+                        <select
+                          aria-label={`Produto da linha ${idx + 1}`}
+                          value={ln.productId}
+                          onChange={(e) =>
+                            setDraftLines((prev) =>
+                              prev.map((x) =>
+                                x.lineId === ln.lineId ? { ...x, productId: e.target.value } : x
+                              )
+                            )
                           }
-                          aria-label={`Remover linha ${idx + 1}`}
-                          className="p-1.5 text-[#B91C1C] hover:bg-[#FEF2F2] rounded"
+                          className="w-full min-h-[44px] sm:min-h-0 px-3 py-2 border border-[#D4D4D4] rounded-lg bg-white"
                         >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
+                          {availableProducts.map((p) => (
+                            <option key={p.id} value={p.id}>
+                              {p.name} — {formatKwanza(p.promoPriceKz ?? p.priceKz)}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className={draftLines.length > 1 ? 'col-span-9 sm:col-span-3' : 'col-span-12 sm:col-span-4'}>
+                        <input
+                          aria-label={`Quantidade da linha ${idx + 1}`}
+                          type="number"
+                          min="1"
+                          value={ln.quantity}
+                          onChange={(e) =>
+                            setDraftLines((prev) =>
+                              prev.map((x) =>
+                                x.lineId === ln.lineId ? { ...x, quantity: e.target.value } : x
+                              )
+                            )
+                          }
+                          className="w-full min-h-[44px] sm:min-h-0 px-3 py-2 border border-[#D4D4D4] rounded-lg tabular-data"
+                        />
+                      </div>
+                      {draftLines.length > 1 && (
+                        <div className="col-span-3 sm:col-span-1 flex justify-end">
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setDraftLines((prev) => prev.filter((x) => x.lineId !== ln.lineId))
+                            }
+                            aria-label={`Remover linha ${idx + 1}`}
+                            className="min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 p-2 text-[#B91C1C] hover:bg-[#FEF2F2] rounded-lg border border-[#FECACA] sm:border-transparent inline-flex items-center justify-center"
+                          >
+                            <Trash2 className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
+                          </button>
+                        </div>
                       )}
                     </div>
+                  ))}
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div>
+                    <label htmlFor="mo-origin" className="block font-medium text-[#0A0A0A] mb-1">
+                      Origem
+                    </label>
+                    <select
+                      id="mo-origin"
+                      value={newOrigin}
+                      onChange={(e) => setNewOrigin(e.target.value as OrderOrigin)}
+                      className="w-full min-h-[44px] sm:min-h-0 px-3 py-2 border border-[#D4D4D4] rounded-lg bg-white"
+                    >
+                      {(Object.keys(ORDER_ORIGIN_LABELS) as OrderOrigin[]).map((o) => (
+                        <option key={o} value={o}>
+                          {ORDER_ORIGIN_LABELS[o]}
+                        </option>
+                      ))}
+                    </select>
                   </div>
-                ))}
-              </div>
+                  <div>
+                    <label htmlFor="mo-status" className="block font-medium text-[#0A0A0A] mb-1">
+                      Estado inicial
+                    </label>
+                    <select
+                      id="mo-status"
+                      value={newStatus}
+                      onChange={(e) => setNewStatus(e.target.value as OrderStatus)}
+                      className="w-full min-h-[44px] sm:min-h-0 px-3 py-2 border border-[#D4D4D4] rounded-lg bg-white"
+                    >
+                      <option value="received">Recebida</option>
+                      <option value="pending_confirmation">Pendente de confirmação</option>
+                      <option value="confirmed">Confirmada</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label htmlFor="mo-payment" className="block font-medium text-[#0A0A0A] mb-1">
+                      Pagamento
+                    </label>
+                    <select
+                      id="mo-payment"
+                      value={newPaymentStatus}
+                      onChange={(e) => setNewPaymentStatus(e.target.value as PaymentStatus)}
+                      className="w-full min-h-[44px] sm:min-h-0 px-3 py-2 border border-[#D4D4D4] rounded-lg bg-white"
+                    >
+                      <option value="pending">Pendente</option>
+                      <option value="paid">Pago</option>
+                    </select>
+                  </div>
+                </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <div>
-                  <label htmlFor="mo-origin" className="block font-medium text-[#0A0A0A] mb-1">
-                    Origem
-                  </label>
-                  <select
-                    id="mo-origin"
-                    value={newOrigin}
-                    onChange={(e) => setNewOrigin(e.target.value as OrderOrigin)}
-                    className="w-full px-3 py-2 border border-[#D4D4D4] rounded-lg bg-white"
-                  >
-                    {(Object.keys(ORDER_ORIGIN_LABELS) as OrderOrigin[]).map((o) => (
-                      <option key={o} value={o}>
-                        {ORDER_ORIGIN_LABELS[o]}
-                      </option>
-                    ))}
-                  </select>
+                <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                  <div className="sm:col-span-2">
+                    <label htmlFor="mo-addr" className="block font-medium text-[#0A0A0A] mb-1">
+                      Morada de entrega
+                    </label>
+                    <input
+                      id="mo-addr"
+                      type="text"
+                      value={newAddress}
+                      onChange={(e) => setNewAddress(e.target.value)}
+                      placeholder="Bairro, rua, ponto de referência..."
+                      className="w-full min-h-[44px] sm:min-h-0 px-3 py-2 border border-[#D4D4D4] rounded-lg"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="mo-fee" className="block font-medium text-[#0A0A0A] mb-1">
+                      Entrega (Kz)
+                    </label>
+                    <input
+                      id="mo-fee"
+                      type="number"
+                      min="0"
+                      value={newFeeKz}
+                      onChange={(e) => setNewFeeKz(e.target.value)}
+                      className="w-full min-h-[44px] sm:min-h-0 px-3 py-2 border border-[#D4D4D4] rounded-lg tabular-data"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="mo-disc" className="block font-medium text-[#0A0A0A] mb-1">
+                      Desconto (Kz)
+                    </label>
+                    <input
+                      id="mo-disc"
+                      type="number"
+                      min="0"
+                      value={newDiscountKz}
+                      onChange={(e) => setNewDiscountKz(e.target.value)}
+                      className="w-full min-h-[44px] sm:min-h-0 px-3 py-2 border border-[#D4D4D4] rounded-lg tabular-data"
+                    />
+                  </div>
                 </div>
-                <div>
-                  <label htmlFor="mo-status" className="block font-medium text-[#0A0A0A] mb-1">
-                    Estado inicial
-                  </label>
-                  <select
-                    id="mo-status"
-                    value={newStatus}
-                    onChange={(e) => setNewStatus(e.target.value as OrderStatus)}
-                    className="w-full px-3 py-2 border border-[#D4D4D4] rounded-lg bg-white"
-                  >
-                    <option value="received">Recebida</option>
-                    <option value="pending_confirmation">Pendente de confirmação</option>
-                    <option value="confirmed">Confirmada</option>
-                  </select>
-                </div>
-                <div>
-                  <label htmlFor="mo-payment" className="block font-medium text-[#0A0A0A] mb-1">
-                    Pagamento
-                  </label>
-                  <select
-                    id="mo-payment"
-                    value={newPaymentStatus}
-                    onChange={(e) => setNewPaymentStatus(e.target.value as PaymentStatus)}
-                    className="w-full px-3 py-2 border border-[#D4D4D4] rounded-lg bg-white"
-                  >
-                    <option value="pending">Pendente</option>
-                    <option value="paid">Pago</option>
-                  </select>
-                </div>
-              </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
-                <div className="sm:col-span-2">
-                  <label htmlFor="mo-addr" className="block font-medium text-[#0A0A0A] mb-1">
-                    Morada de entrega
+                <div>
+                  <label htmlFor="mo-notes" className="block font-medium text-[#0A0A0A] mb-1">
+                    Observações internas
                   </label>
                   <input
-                    id="mo-addr"
+                    id="mo-notes"
                     type="text"
-                    value={newAddress}
-                    onChange={(e) => setNewAddress(e.target.value)}
-                    placeholder="Bairro, rua, ponto de referência..."
-                    className="w-full px-3 py-2 border border-[#D4D4D4] rounded-lg"
+                    value={newNotes}
+                    onChange={(e) => setNewNotes(e.target.value)}
+                    className="w-full min-h-[44px] sm:min-h-0 px-3 py-2 border border-[#D4D4D4] rounded-lg"
                   />
                 </div>
-                <div>
-                  <label htmlFor="mo-fee" className="block font-medium text-[#0A0A0A] mb-1">
-                    Entrega (Kz)
-                  </label>
-                  <input
-                    id="mo-fee"
-                    type="number"
-                    min="0"
-                    value={newFeeKz}
-                    onChange={(e) => setNewFeeKz(e.target.value)}
-                    className="w-full px-3 py-2 border border-[#D4D4D4] rounded-lg tabular-data"
-                  />
+
+                {/* Estimated Server Summary */}
+                <div className="p-3.5 rounded-[10px] bg-[#0A0A0A] text-white flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
+                  <span className="text-[#A3A3A3] break-words">
+                    Subtotal {formatKwanza(draftPreviewTotals.subtotalKz)} + Entrega{' '}
+                    {formatKwanza(draftPreviewTotals.deliveryFeeKz)}
+                  </span>
+                  <span className="metric-num font-bold text-sm text-[#FFC400]">
+                    Total: {formatKwanza(draftPreviewTotals.totalKz)}
+                  </span>
                 </div>
-                <div>
-                  <label htmlFor="mo-disc" className="block font-medium text-[#0A0A0A] mb-1">
-                    Desconto (Kz)
-                  </label>
-                  <input
-                    id="mo-disc"
-                    type="number"
-                    min="0"
-                    value={newDiscountKz}
-                    onChange={(e) => setNewDiscountKz(e.target.value)}
-                    className="w-full px-3 py-2 border border-[#D4D4D4] rounded-lg tabular-data"
-                  />
-                </div>
+
+                {createError && (
+                  <div role="alert" className="p-3 rounded-lg bg-[#FEF2F2] border border-[#FECACA] text-[#B91C1C] break-words">
+                    {createError}
+                  </div>
+                )}
               </div>
 
-              <div>
-                <label htmlFor="mo-notes" className="block font-medium text-[#0A0A0A] mb-1">
-                  Observações internas
-                </label>
-                <input
-                  id="mo-notes"
-                  type="text"
-                  value={newNotes}
-                  onChange={(e) => setNewNotes(e.target.value)}
-                  className="w-full px-3 py-2 border border-[#D4D4D4] rounded-lg"
-                />
-              </div>
-
-              {/* Estimated Server Summary */}
-              <div className="p-3.5 rounded-[10px] bg-[#0A0A0A] text-white flex items-center justify-between">
-                <span className="text-[#A3A3A3]">
-                  Subtotal {formatKwanza(draftPreviewTotals.subtotalKz)} + Entrega{' '}
-                  {formatKwanza(draftPreviewTotals.deliveryFeeKz)}
-                </span>
-                <span className="metric-num font-bold text-sm text-[#FFC400]">
-                  Total: {formatKwanza(draftPreviewTotals.totalKz)}
-                </span>
-              </div>
-
-              {createError && (
-                <div role="alert" className="p-3 rounded-lg bg-[#FEF2F2] border border-[#FECACA] text-[#B91C1C]">
-                  {createError}
-                </div>
-              )}
-
-              <div className="flex justify-end gap-3 pt-1">
+              <div className="shrink-0 px-4 sm:px-6 py-3.5 border-t border-[#E5E5E5] bg-[#FAFAFA] flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2.5">
                 <button
                   type="button"
                   disabled={isCreatingOrder}
                   onClick={() => setCreateOpen(false)}
-                  className="px-4 py-2 border border-[#D4D4D4] rounded-[10px] disabled:opacity-50"
+                  className="min-h-[44px] sm:min-h-0 px-4 py-2 bg-white border border-[#D4D4D4] rounded-[10px] font-medium hover:bg-[#F4F4F4] disabled:opacity-50"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={isCreatingOrder}
-                  className="btn-bercali-primary px-4 py-2 rounded-[10px] disabled:opacity-50"
+                  className="btn-bercali-primary min-h-[44px] sm:min-h-0 px-4 py-2 rounded-[10px] disabled:opacity-50"
                 >
                   {isCreatingOrder ? 'A registar...' : 'Registar Encomenda'}
                 </button>

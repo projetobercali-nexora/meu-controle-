@@ -191,7 +191,7 @@ export const CustomersPage: React.FC = () => {
             type="button"
             disabled={isMutating}
             onClick={openCreate}
-            className="btn-bercali-primary px-4 py-2.5 rounded-[10px] text-xs inline-flex items-center gap-2 whitespace-nowrap shrink-0 disabled:opacity-50"
+            className="btn-bercali-primary min-h-[44px] sm:min-h-0 px-4 py-2.5 rounded-[10px] text-xs inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0 w-full sm:w-auto disabled:opacity-50"
           >
             <Plus className="w-4 h-4" />
             <span>Registar Cliente</span>
@@ -200,7 +200,7 @@ export const CustomersPage: React.FC = () => {
       </div>
 
       <div className="bg-white border border-[#E5E5E5] rounded-xl p-4">
-        <div className="relative max-w-md">
+        <div className="relative sm:max-w-md">
           <Search className="w-4 h-4 text-[#737373] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
           <input
             type="search"
@@ -208,7 +208,7 @@ export const CustomersPage: React.FC = () => {
             onChange={(e) => setSearch(e.target.value)}
             aria-label="Pesquisar clientes"
             placeholder="Pesquisar por nome, telefone (+244...), email ou cidade..."
-            className="w-full pl-9 pr-3 py-2 text-xs bg-[#F4F4F4] border border-transparent focus:bg-white focus:border-[#FF8A00] focus:outline-none rounded-[10px]"
+            className="w-full min-h-[44px] sm:min-h-0 pl-9 pr-3 py-2 text-xs bg-[#F4F4F4] border border-transparent focus:bg-white focus:border-[#FF8A00] focus:outline-none rounded-[10px]"
           />
         </div>
       </div>
@@ -230,7 +230,55 @@ export const CustomersPage: React.FC = () => {
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           <div className="lg:col-span-7 bg-white border border-[#E5E5E5] rounded-xl overflow-hidden">
-            <div className="overflow-x-auto">
+            {/* Mobile Stacked Cards (< md) */}
+            <div className="md:hidden divide-y divide-[#E5E5E5] text-xs">
+              {filteredCustomers.map((c) => {
+                const st = customerStats.get(c.id) || {
+                  totalOrders: 0,
+                  confirmedSpendKz: 0,
+                  pendingCount: 0,
+                };
+                const active = selectedCustomer?.id === c.id;
+                return (
+                  <button
+                    key={c.id}
+                    type="button"
+                    onClick={() => setSelectedId(c.id)}
+                    className={`w-full text-left p-4 space-y-2 transition-colors ${
+                      active ? 'bg-[#FFF8EB]' : 'hover:bg-[#FAFAFA]'
+                    }`}
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <p className="font-semibold text-[#0A0A0A] break-words leading-snug">
+                          {c.name}
+                        </p>
+                        <p className="font-mono text-[11px] text-[#525252] mt-0.5">
+                          {maskPhone(c.phoneNormalized)}
+                        </p>
+                      </div>
+                      <span className="metric-num font-bold text-[#0A0A0A] shrink-0">
+                        {formatKwanza(st.confirmedSpendKz)}
+                      </span>
+                    </div>
+
+                    <div className="flex flex-wrap items-center justify-between gap-2 pt-1.5 border-t border-[#F4F4F4] text-[11px] text-[#525252]">
+                      <span>
+                        {CRM_STAGE_LABELS[c.crmStage]} · {c.city || '—'} ·{' '}
+                        {SOURCE_LABELS[c.source] || c.source}
+                      </span>
+                      <span className="tabular-data text-[#737373]">
+                        {st.totalOrders} enc.
+                        {st.pendingCount > 0 ? ` · ${st.pendingCount} pend.` : ''}
+                      </span>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Desktop Table (md+) */}
+            <div className="hidden md:block overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="border-b border-[#E5E5E5] bg-[#FAFAFA] text-[11px] font-semibold text-[#525252]">
@@ -287,13 +335,13 @@ export const CustomersPage: React.FC = () => {
 
           {/* Customer Detail Inspector */}
           {selectedCustomer && (
-            <div className="lg:col-span-5 bg-white border border-[#E5E5E5] rounded-xl p-5 space-y-4 text-xs">
+            <div className="lg:col-span-5 bg-white border border-[#E5E5E5] rounded-xl p-4 sm:p-5 space-y-4 text-xs">
               <div className="flex items-start justify-between gap-2 pb-3 border-b border-[#E5E5E5]">
-                <div>
-                  <h2 className="font-brand font-bold text-lg text-[#0A0A0A]">
+                <div className="min-w-0">
+                  <h2 className="font-brand font-bold text-lg text-[#0A0A0A] break-words">
                     {selectedCustomer.name}
                   </h2>
-                  <p className="text-[#525252] mt-0.5">
+                  <p className="text-[#525252] mt-0.5 break-words">
                     {CRM_STAGE_LABELS[selectedCustomer.crmStage]} · {selectedCustomer.city}
                   </p>
                 </div>
@@ -302,23 +350,23 @@ export const CustomersPage: React.FC = () => {
                     type="button"
                     onClick={() => openEdit(selectedCustomer)}
                     aria-label={`Editar cliente ${selectedCustomer.name}`}
-                    className="p-2 rounded-lg border border-[#E5E5E5] hover:bg-[#F4F4F4]"
+                    className="min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 p-2 rounded-lg border border-[#E5E5E5] hover:bg-[#F4F4F4] inline-flex items-center justify-center shrink-0"
                   >
-                    <Edit3 className="w-3.5 h-3.5" />
+                    <Edit3 className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
                   </button>
                 )}
               </div>
 
-              <div className="grid grid-cols-2 gap-3 bg-[#F4F4F4] rounded-[10px] p-3.5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-[#F4F4F4] rounded-[10px] p-3.5">
                 <div>
                   <p className="text-[11px] text-[#525252]">Telefone normalizado</p>
-                  <p className="font-mono font-semibold text-[#0A0A0A]">
+                  <p className="font-mono font-semibold text-[#0A0A0A] break-all">
                     {maskPhone(selectedCustomer.phoneNormalized)}
                   </p>
                 </div>
                 <div>
                   <p className="text-[11px] text-[#525252]">Email</p>
-                  <p className="font-medium text-[#0A0A0A] truncate">
+                  <p className="font-medium text-[#0A0A0A] break-all">
                     {canViewPii ? selectedCustomer.email || 'Não indicado' : 'Protegido'}
                   </p>
                 </div>
@@ -341,14 +389,14 @@ export const CustomersPage: React.FC = () => {
               {selectedCustomer.internalSummary && (
                 <div>
                   <p className="font-semibold text-[#0A0A0A] mb-1">Observações internas</p>
-                  <p className="text-[#525252] leading-relaxed">
+                  <p className="text-[#525252] leading-relaxed break-words">
                     {selectedCustomer.internalSummary}
                   </p>
                 </div>
               )}
 
               <div className="pt-2 border-t border-[#E5E5E5]">
-                <div className="flex items-center justify-between mb-2">
+                <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
                   <p className="font-brand font-bold text-xs text-[#0A0A0A]">
                     Histórico de Encomendas ({selectedCustomerOrders.length})
                   </p>
@@ -358,7 +406,7 @@ export const CustomersPage: React.FC = () => {
                       setFocusedEntityId(selectedCustomer.id);
                       setActiveModule('crm');
                     }}
-                    className="text-xs font-semibold text-[#FF8A00] hover:underline inline-flex items-center gap-1"
+                    className="min-h-[44px] sm:min-h-0 text-xs font-semibold text-[#FF8A00] hover:underline inline-flex items-center gap-1 whitespace-nowrap"
                   >
                     <span>Abrir ficha no CRM</span>
                     <ArrowUpRight className="w-3.5 h-3.5" />
@@ -372,16 +420,16 @@ export const CustomersPage: React.FC = () => {
                 ) : (
                   <div className="divide-y divide-[#E5E5E5]">
                     {selectedCustomerOrders.map((o) => (
-                      <div key={o.id} className="py-2.5 flex items-center justify-between gap-2">
-                        <div className="space-y-0.5">
-                          <p className="font-mono font-semibold text-[#0A0A0A]">{o.code}</p>
+                      <div key={o.id} className="py-2.5 flex items-start sm:items-center justify-between gap-2">
+                        <div className="space-y-0.5 min-w-0">
+                          <p className="font-mono font-semibold text-[#0A0A0A] break-words">{o.code}</p>
                           <div className="flex flex-wrap items-center gap-2">
                             <OrderStatusInline status={o.status} />
                             <span className="text-[#D4D4D4]">·</span>
                             <PaymentStatusInline status={o.paymentStatus} />
                           </div>
                         </div>
-                        <span className="metric-num font-bold text-[#0A0A0A]">
+                        <span className="metric-num font-bold text-[#0A0A0A] shrink-0">
                           {formatKwanza(o.totalKz)}
                         </span>
                       </div>
@@ -397,14 +445,19 @@ export const CustomersPage: React.FC = () => {
       {/* Create / Edit Customer Modal */}
       {modalOpen && (
         <div
-          className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4"
+          className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-3 sm:p-4 pt-safe pb-safe"
           role="dialog"
           aria-modal="true"
           aria-labelledby="cust-modal-title"
+          onClick={(e) => {
+            if (e.target === e.currentTarget && !isSubmitting) {
+              setModalOpen(false);
+            }
+          }}
         >
-          <div className="bg-white rounded-xl border border-[#E5E5E5] max-w-md w-full p-6">
-            <div className="flex items-center justify-between pb-3 mb-4 border-b border-[#E5E5E5]">
-              <h2 id="cust-modal-title" className="font-brand font-bold text-lg text-[#0A0A0A]">
+          <div className="bg-white rounded-xl border border-[#E5E5E5] max-w-md w-full max-h-[90dvh] flex flex-col overflow-hidden">
+            <div className="shrink-0 flex items-center justify-between gap-3 px-4 sm:px-6 py-4 border-b border-[#E5E5E5]">
+              <h2 id="cust-modal-title" className="font-brand font-bold text-base sm:text-lg text-[#0A0A0A]">
                 {editingCustomer ? 'Editar Cliente' : 'Registar Novo Cliente'}
               </h2>
               <button
@@ -412,121 +465,127 @@ export const CustomersPage: React.FC = () => {
                 disabled={isSubmitting}
                 onClick={() => setModalOpen(false)}
                 aria-label="Fechar janela"
-                className="p-1.5 rounded-lg hover:bg-[#F4F4F4]"
+                className="min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 p-2 rounded-lg hover:bg-[#F4F4F4] inline-flex items-center justify-center shrink-0"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            <form onSubmit={(e) => void handleSave(e)} noValidate className="space-y-3.5 text-xs">
-              <div>
-                <label htmlFor="cust-name" className="block font-medium text-[#0A0A0A] mb-1">
-                  Nome completo *
-                </label>
-                <input
-                  id="cust-name"
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Ex.: Joana Manuel"
-                  className="w-full px-3 py-2 border border-[#D4D4D4] rounded-[10px]"
-                />
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <form
+              onSubmit={(e) => void handleSave(e)}
+              noValidate
+              className="flex flex-col flex-1 min-h-0 text-xs"
+            >
+              <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-4 sm:p-6 space-y-3.5">
                 <div>
-                  <label htmlFor="cust-phone" className="block font-medium text-[#0A0A0A] mb-1">
-                    Telefone / WhatsApp *
+                  <label htmlFor="cust-name" className="block font-medium text-[#0A0A0A] mb-1">
+                    Nome completo *
                   </label>
                   <input
-                    id="cust-phone"
-                    type="tel"
-                    value={phoneRaw}
-                    onChange={(e) => setPhoneRaw(e.target.value)}
-                    placeholder="+244 923 000 000"
-                    className="w-full px-3 py-2 font-mono border border-[#D4D4D4] rounded-[10px]"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="cust-email" className="block font-medium text-[#0A0A0A] mb-1">
-                    Email (opcional)
-                  </label>
-                  <input
-                    id="cust-email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="cliente@exemplo.ao"
-                    className="w-full px-3 py-2 border border-[#D4D4D4] rounded-[10px]"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label htmlFor="cust-city" className="block font-medium text-[#0A0A0A] mb-1">
-                    Cidade / Bairro
-                  </label>
-                  <input
-                    id="cust-city"
+                    id="cust-name"
                     type="text"
-                    value={city}
-                    onChange={(e) => setCity(e.target.value)}
-                    placeholder="Ex.: Luanda · Kilamba"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Ex.: Joana Manuel"
+                    className="w-full min-h-[44px] sm:min-h-0 px-3 py-2 border border-[#D4D4D4] rounded-[10px]"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label htmlFor="cust-phone" className="block font-medium text-[#0A0A0A] mb-1">
+                      Telefone / WhatsApp *
+                    </label>
+                    <input
+                      id="cust-phone"
+                      type="tel"
+                      value={phoneRaw}
+                      onChange={(e) => setPhoneRaw(e.target.value)}
+                      placeholder="+244 923 000 000"
+                      className="w-full min-h-[44px] sm:min-h-0 px-3 py-2 font-mono border border-[#D4D4D4] rounded-[10px]"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="cust-email" className="block font-medium text-[#0A0A0A] mb-1">
+                      Email (opcional)
+                    </label>
+                    <input
+                      id="cust-email"
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="cliente@exemplo.ao"
+                      className="w-full min-h-[44px] sm:min-h-0 px-3 py-2 border border-[#D4D4D4] rounded-[10px]"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label htmlFor="cust-city" className="block font-medium text-[#0A0A0A] mb-1">
+                      Cidade / Bairro
+                    </label>
+                    <input
+                      id="cust-city"
+                      type="text"
+                      value={city}
+                      onChange={(e) => setCity(e.target.value)}
+                      placeholder="Ex.: Luanda · Kilamba"
+                      className="w-full min-h-[44px] sm:min-h-0 px-3 py-2 border border-[#D4D4D4] rounded-[10px]"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="cust-stage" className="block font-medium text-[#0A0A0A] mb-1">
+                      Estado inicial CRM
+                    </label>
+                    <select
+                      id="cust-stage"
+                      value={crmStage}
+                      onChange={(e) => setCrmStage(e.target.value as CrmStage)}
+                      className="w-full min-h-[44px] sm:min-h-0 px-3 py-2 border border-[#D4D4D4] rounded-[10px] bg-white"
+                    >
+                      {(Object.keys(CRM_STAGE_LABELS) as CrmStage[]).map((st) => (
+                        <option key={st} value={st}>
+                          {CRM_STAGE_LABELS[st]}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="cust-sum" className="block font-medium text-[#0A0A0A] mb-1">
+                    Observações internas
+                  </label>
+                  <textarea
+                    id="cust-sum"
+                    rows={2}
+                    value={summary}
+                    onChange={(e) => setSummary(e.target.value)}
                     className="w-full px-3 py-2 border border-[#D4D4D4] rounded-[10px]"
                   />
                 </div>
-                <div>
-                  <label htmlFor="cust-stage" className="block font-medium text-[#0A0A0A] mb-1">
-                    Estado inicial CRM
-                  </label>
-                  <select
-                    id="cust-stage"
-                    value={crmStage}
-                    onChange={(e) => setCrmStage(e.target.value as CrmStage)}
-                    className="w-full px-3 py-2 border border-[#D4D4D4] rounded-[10px] bg-white"
-                  >
-                    {(Object.keys(CRM_STAGE_LABELS) as CrmStage[]).map((st) => (
-                      <option key={st} value={st}>
-                        {CRM_STAGE_LABELS[st]}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+
+                {formError && (
+                  <div role="alert" className="p-3 rounded-lg bg-[#FEF2F2] border border-[#FECACA] text-[#B91C1C] break-words">
+                    {formError}
+                  </div>
+                )}
               </div>
 
-              <div>
-                <label htmlFor="cust-sum" className="block font-medium text-[#0A0A0A] mb-1">
-                  Observações internas
-                </label>
-                <textarea
-                  id="cust-sum"
-                  rows={2}
-                  value={summary}
-                  onChange={(e) => setSummary(e.target.value)}
-                  className="w-full px-3 py-2 border border-[#D4D4D4] rounded-[10px]"
-                />
-              </div>
-
-              {formError && (
-                <div role="alert" className="p-3 rounded-lg bg-[#FEF2F2] border border-[#FECACA] text-[#B91C1C]">
-                  {formError}
-                </div>
-              )}
-
-              <div className="flex justify-end gap-3 pt-2">
+              <div className="shrink-0 px-4 sm:px-6 py-3.5 border-t border-[#E5E5E5] bg-[#FAFAFA] flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2.5">
                 <button
                   type="button"
                   disabled={isSubmitting}
                   onClick={() => setModalOpen(false)}
-                  className="px-4 py-2 border border-[#D4D4D4] rounded-[10px] disabled:opacity-50"
+                  className="min-h-[44px] sm:min-h-0 px-4 py-2 bg-white border border-[#D4D4D4] rounded-[10px] font-medium hover:bg-[#F4F4F4] disabled:opacity-50"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="btn-bercali-primary px-4 py-2 rounded-[10px] disabled:opacity-50"
+                  className="btn-bercali-primary min-h-[44px] sm:min-h-0 px-4 py-2 rounded-[10px] disabled:opacity-50"
                 >
                   {isSubmitting
                     ? 'A guardar...'
